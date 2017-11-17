@@ -108,3 +108,34 @@ The result is given as:
 ```
 [-227364086.53073898, 227364586.53073898, 231985198.37073097, -2311055.9199959813, 500.0, -229675142.45073497]
 ```
+
+
+
+Future Features
+------------
+1. Support for nuclear reactions
+2. Support for radioactive entities
+3. Generate half-life graphs for species
+
+Steps: 
+    1. Nuclear reactions:
+    def detect nuclear_reaction_type():
+        1. Check against database for atomic weight
+            - Database contains atomic weight and atomic number
+            - Also contains nature of nuclei - stable or unstable
+        2. Detect type of reaction out of
+            - alpha decay
+            - beta decay
+            - positron emission
+            - electron capture
+            - gamma emission
+            - spontaneous fission
+           which produces stable nuclei and generate complete reaction
+        3. Decay series: produce set of reaction series generated to reach stable radioactive nuclei
+        4. Generate visualisation of decay, half lives of radioactive entities in products/series
+
+    2. Visualise half lives
+    def visualise_decay():
+        1. Calculate reaction rates for each entity
+        2. Generate decay graphs for products and reactants for reversible and irreversible reactions
+        3. Generate half-life graph for radioactive particles
