@@ -111,8 +111,9 @@ The result is given as:
 
 Reversible Reactions:
 ```
-Use same functions and methods as basic reactions. The tag <reaction reversible="no"...> or <reaction reversible="yes"...> in your xml file determines which functions will run in the background.
+Use same functions and methods as basic reactions. 
+The tag <reaction reversible = ""> in your xml file determines which functions will run in the background.
 
-If <reaction reversible="yes"...>: calculations will be for reversible reactions.
-If <reaction reversible="no"...>: calculations will be for non-reversible reactions.
+If tag <reaction reversible="yes"...> : calculations will be for reversible reactions.
+If tag <reaction reversible="no"...>: calculations will be for non-reversible reactions.
 ```
