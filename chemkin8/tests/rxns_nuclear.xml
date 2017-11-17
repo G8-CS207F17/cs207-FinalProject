@@ -1,18 +1,23 @@
-<!-- Sample radioactive reaction xml  -->
-<reaction reversible="no" type="Radioactive" id="reaction01">
-    <equation>U-238</equation>
-    <rateCoeff>
-      <conc>3.52e+10</conc>
-      <lambda>7.14e+04</lambda> <!-- Decay constant -->
-    </rateCoeff>
-</reaction>
+<?xml version="1.0"?>
 
+<ntml>
 
-<!-- Sample nuclear reaction xml  -->
-<reaction reversible="no" type="Nuclear" id="reaction01">
-    <equation>C =] N</equation>
-    <rateCoeff>
-      <conc>3.52e+10</conc>
-      <lambda>7.14e+04</lambda> <!-- Decay constant -->
-    </rateCoeff>
-</reaction>
+    <!-- Sample radioactive reaction xml  -->
+    <reaction reversible="no" type="Radioactive" id="reaction01">
+        <equation>U-238</equation>
+        <rateCoeff>
+          <conc>3.52e+10</conc>
+          <lambda>7.14e+04</lambda> <!-- Decay constant -->
+        </rateCoeff>
+    </reaction>
+
+    <!-- Sample nuclear reaction xml  -->
+    <reaction reversible="no" type="Nuclear" id="reaction01">
+        <equation>C =] N</equation>
+        <rateCoeff>
+          <conc>3.52e+10</conc>
+          <lambda>7.14e+04</lambda> <!-- Decay constant -->
+        </rateCoeff>
+    </reaction>
+
+</ntml>
