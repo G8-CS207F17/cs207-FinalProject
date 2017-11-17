@@ -117,25 +117,32 @@ Future Features
 2. Support for radioactive entities
 3. Generate half-life graphs for species
 
-Steps: 
-    1. Nuclear reactions:
-    def detect nuclear_reaction_type():
-        1. Check against database for atomic weight
-            - Database contains atomic weight and atomic number
-            - Also contains nature of nuclei - stable or unstable
-        2. Detect type of reaction out of
-            - alpha decay
-            - beta decay
-            - positron emission
-            - electron capture
-            - gamma emission
-            - spontaneous fission
-           which produces stable nuclei and generate complete reaction
-        3. Decay series: produce set of reaction series generated to reach stable radioactive nuclei
-        4. Generate visualisation of decay, half lives of radioactive entities in products/series
+Steps:
 
-    2. Visualise half lives
-    def visualise_decay():
-        1. Calculate reaction rates for each entity
-        2. Generate decay graphs for products and reactants for reversible and irreversible reactions
-        3. Generate half-life graph for radioactive particles
+1. Nuclear reactions:
+    - Check against database for atomic weight
+        - Database contains atomic weight and atomic number
+        - Also contains nature of nuclei - stable or unstable
+          If product is stable, decay is halted
+          else, continue reducing to stable products (decay series - more in step 3)
+
+    - Detect type of reaction out of
+        - alpha decay
+        - beta decay
+        - positron emission
+        - electron capture
+        - gamma emission
+        - spontaneous fission
+          which produces stable nuclei. Generate complete reactions, graphs, etc.
+
+    - Decay series: produce set of reaction series generated to reach stable radioactive nuclei
+    - Generate reactions and visualisation of decay, half live graphs of radioactive entities in products/series etc
+
+2. Radioactive entities
+    - If simply a radioactive entity is provided, its decomposition reaction/series can be generated
+    - Reactions and graphs at each step are illustrated.
+
+3. Visualisation
+    - Calculate reaction rates for each entity
+    - Generate decay graphs for products and reactants for reversible and irreversible reactions
+    - Generate half-life graph for radioactive particles

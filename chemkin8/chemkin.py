@@ -491,17 +491,15 @@ class chemkin:
                 reaction_rates[i] = reaction_rates[i] + ((self.v2[j][i]-self.v1[j][i])*progress[j])
         return reaction_rates
 
-'''
-    1. Nuclear reactions:
-    def detect nuclear_reaction_type():
-
-    2. Visualise half lives
-    def visualise_decay():
-'''
-
     def __str__(self):
         return str(vars(self))
 
     def __repr__(self):
         class_name = type(self).__name__
         return class_name + '()'
+
+    #1. Nuclear reactions:
+    #def detect nuclear_reaction_type():
+
+    #2. Visualise half lives
+    #def visualise_decay():
