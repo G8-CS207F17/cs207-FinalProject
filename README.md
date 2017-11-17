@@ -19,6 +19,8 @@ Install the package by running `pip install chemkin8` in terminal.
 
 To run the test suite, either navigate to the folder where this package is installed or download this repo and navigate to the root folder, then run `pytest` in terminal.
 
+For example, if the python distribution is installed with anaconda, then the package will be installed at `/Users/myid/anaconda/lib/python3.6/site-packages` where `myid` is the user name of the laptop. Then, open terminal, run `cd /Users/myid/anaconda/lib/python3.6/site-packages`, followed by `pytest`.
+
 
 
 
