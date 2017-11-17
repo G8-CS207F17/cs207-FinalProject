@@ -15,11 +15,10 @@ Our package can also handle an arbitrary number of species and reactions. It is 
 
 Installation
 ------------
-Download package distribution from https://github.com/G8-CS207F17/cs207-FinalProject.
+Install the package by running `pip install chemkin8` in terminal.
 
-Packages needed: `numpy`, `xml`, `pytest` (`pip install PACKAGE_NAME`)
+To run the test suite, either navigate to the folder where this package is installed or download this repo and navigate to the root folder, then run `pytest` in terminal.
 
-Run test suites: run `pytest --doctest-modules --cov --cov-report term-missing` in terminal
 
 
 
@@ -88,20 +87,19 @@ We can add information about these reactions in an xml file of the form:
 
 We import the chemical kinetics library as follows:
 ```
-from chemkin import *
+from chemkin8 import chemkin
 ```
 
-We can parse this xml file about reactions using the code below:
+We can initialize the object and parse the XML file by passing in the path to the XML file:
 ```
-testcase1 = chemkin()
-testcase1.parse(filename)
+testcase1 = chemkin.chemkin('path-to-xml')
 ```
 
 We input the concentrations of each species and the temperature at which reactions occur. The reaction rates of each species in the system can be given as:
 ```
 x = [1,1,1,1,1,1]
 T = 1500
-rates = testcase1.reaction_rates(x, T)
+testcase1.reaction_rates(x, T)
 ```
 
 The result is given as:
