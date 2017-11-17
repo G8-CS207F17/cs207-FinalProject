@@ -108,3 +108,11 @@ The result is given as:
 ```
 [-227364086.53073898, 227364586.53073898, 231985198.37073097, -2311055.9199959813, 500.0, -229675142.45073497]
 ```
+
+Reversible Reactions:
+```
+Use same functions and methods as basic reactions. The tag <reaction reversible="no"...> or <reaction reversible="yes"...> in your xml file determines which functions will run in the background.
+
+If <reaction reversible="yes"...>: calculations will be for reversible reactions.
+If <reaction reversible="no"...>: calculations will be for non-reversible reactions.
+```
