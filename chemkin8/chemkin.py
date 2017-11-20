@@ -231,6 +231,9 @@ class chemkin:
         else:
             self.nasa = feed
 
+    def NASAcoeffs(self):
+        return self.nasa
+
     def k_constant(self, k):
         """Returns the constant reaction rate coefficient.
 
