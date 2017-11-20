@@ -111,9 +111,45 @@ The result is given as:
 
 Reversible Reactions:
 ```
-Use same functions and methods as basic reactions. 
+Use same functions and methods as basic reactions.
 The tag <reaction reversible = ""> in your xml file determines which functions will run in the background.
 
 If tag <reaction reversible="yes"...> : calculations will be for reversible reactions.
 If tag <reaction reversible="no"...>: calculations will be for non-reversible reactions.
 ```
+
+Future Features
+------------
+1. Support for nuclear reactions
+2. Support for radioactive entities
+3. Generate half-life graphs for species
+
+Steps:
+
+1. Nuclear reactions:
+    - Check against database for atomic weight
+        - Database contains atomic weight and atomic number
+        - Also contains nature of nuclei - stable or unstable
+          If product is stable, decay is halted
+          else, continue reducing to stable products (decay series - more in step 3)
+
+    - Detect type of reaction out of
+        - alpha decay
+        - beta decay
+        - positron emission
+        - electron capture
+        - gamma emission
+        - spontaneous fission
+          which produces stable nuclei. Generate complete reactions, graphs, etc.
+
+    - Decay series: produce set of reaction series generated to reach stable radioactive nuclei
+    - Generate reactions and visualisation of decay, half live graphs of radioactive entities in products/series etc
+
+2. Radioactive entities
+    - If simply a radioactive entity is provided, its decomposition reaction/series can be generated
+    - Reactions and graphs at each step are illustrated.
+
+3. Visualisation
+    - Calculate reaction rates for each entity
+    - Generate decay graphs for products and reactants for reversible and irreversible reactions
+    - Generate half-life graph for radioactive particles
