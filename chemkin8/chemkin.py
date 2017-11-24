@@ -7,13 +7,13 @@ from chemkin8.parser import *
 class backward:
     """Methods for calculating the backward reaction rate.
 
-    Cp_over_R: Returns specific heat of each specie given by 
+    Cp_over_R: Returns specific heat of each specie given by
                the NASA polynomials.
-    H_over_RT:  Returns the enthalpy of each specie given by 
+    H_over_RT:  Returns the enthalpy of each specie given by
                 the NASA polynomials.
-    S_over_R: Returns the entropy of each specie given by 
+    S_over_R: Returns the entropy of each specie given by
               the NASA polynomials.
-    backward_coeffs:  Returns the backward reaction rate 
+    backward_coeffs:  Returns the backward reaction rate
                       coefficient for reach reaction.
     """
 
@@ -44,7 +44,7 @@ class backward:
 
         a = self.nasa7_coeffs
 
-        Cp_R = (a[:,0] + a[:,1] * T + a[:,2] * T**2.0 
+        Cp_R = (a[:,0] + a[:,1] * T + a[:,2] * T**2.0
                 + a[:,3] * T**3.0 + a[:,4] * T**4.0)
 
         return Cp_R
@@ -69,12 +69,12 @@ class backward:
 
         a = self.nasa7_coeffs
 
-        H_RT = (a[:,0] + a[:,1] * T / 2.0 + a[:,2] * T**2.0 / 3.0 
-                + a[:,3] * T**3.0 / 4.0 + a[:,4] * T**4.0 / 5.0 
+        H_RT = (a[:,0] + a[:,1] * T / 2.0 + a[:,2] * T**2.0 / 3.0
+                + a[:,3] * T**3.0 / 4.0 + a[:,4] * T**4.0 / 5.0
                 + a[:,5] / T)
 
         return H_RT
-               
+
     def S_over_R(self, T):
         """Returns the entropy of each specie given by the NASA polynomials.
 
@@ -95,7 +95,7 @@ class backward:
 
         a = self.nasa7_coeffs
 
-        S_R = (a[:,0] * np.log(T) + a[:,1] * T + a[:,2] * T**2.0 / 2.0 
+        S_R = (a[:,0] * np.log(T) + a[:,1] * T + a[:,2] * T**2.0 / 2.0
                + a[:,3] * T**3.0 / 3.0 + a[:,4] * T**4.0 / 4.0 + a[:,6])
 
         return S_R
@@ -132,7 +132,7 @@ class backward:
         delta_H_over_RT = np.dot(self.nuij, self.H_over_RT(T))
         delta_S_over_R = np.dot(self.nuij, self.S_over_R(T))
 
-        # Negative of change in Gibbs free energy for each reaction 
+        # Negative of change in Gibbs free energy for each reaction
         delta_G_over_RT = delta_S_over_R - delta_H_over_RT
 
         # Prefactor in Ke
@@ -191,14 +191,14 @@ class chemkin:
             self.v1.append(reactions_dict['reactants'][species])
         for species in self.species_lst:
             self.v2.append(reactions_dict['products'][species])
-        
+
 
         self.v1 = np.array(self.v1).T
         self.v2 = np.array(self.v2).T
 
     def parseNASA(self, T, feed=None):
         """Reads the NASA polynomials from the database nasapoly.sqlite and stores them in self.nasa
-        
+
         INPUTS
         =======
         T: float, environment temperature
@@ -411,7 +411,7 @@ class chemkin:
         RETURNS
         ========
         progress rate: list of progress rate of each reaction
-        
+
         EXAMPLES
         ========
         >>> test_data_dir = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'tests/')
@@ -463,7 +463,7 @@ class chemkin:
         RETURNS
         ========
         reaction rate: list of rate of consumption or formation of specie
-        
+
         EXAMPLES
         ========
         >>> test_data_dir = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'tests/')
@@ -476,7 +476,7 @@ class chemkin:
             self.parseNASA(T)
         except:
             raise ValueError("NASA parsing failed. Please check your database.")
-            
+
         self.k_system(T)
 
         if np.array(self.v1).shape != np.array(self.v2).shape:
@@ -500,3 +500,9 @@ class chemkin:
     def __repr__(self):
         class_name = type(self).__name__
         return class_name + '()'
+
+    #1. Nuclear reactions:
+    #def detect nuclear_reaction_type():
+
+    #2. Visualise half lives
+    #def visualise_decay():

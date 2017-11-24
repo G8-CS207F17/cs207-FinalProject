@@ -111,9 +111,50 @@ The result is given as:
 
 Reversible Reactions:
 ```
-Use same functions and methods as basic reactions. 
+Use same functions and methods as basic reactions.
 The tag <reaction reversible = ""> in your xml file determines which functions will run in the background.
 
 If tag <reaction reversible="yes"...> : calculations will be for reversible reactions.
 If tag <reaction reversible="no"...>: calculations will be for non-reversible reactions.
 ```
+
+Future Features
+---------------
+**Motivation:**
+The aim of including these features is to expand the types of reactions that our `chemkin` library can process and generate information about.
+
+**Suggested Features:**
+1. Support for nuclear reactions
+2. Support for radioactive entities
+3. Generate half-life graphs for species
+
+**Description of Features and Steps to add them:**
+
+1. Nuclear reactions - We want to detect the type of nuclear reaction and generate the decay sequence until a stable product is obtained.:
+    - Maintain database of radioactive elements
+    - Check against database for atomic weight
+        - Database contains atomic weight and atomic number
+        - Also contains nature of nuclei - stable or unstable
+          If product is stable, decay is halted
+          else, continue reducing to stable products (decay series - more in step 3)
+
+    - Detect type of reaction out of
+        - alpha decay
+        - beta decay
+        - positron emission
+        - electron capture
+        - gamma emission
+        - spontaneous fission
+          which produces stable nuclei. Generate complete reactions, graphs, etc.
+
+    - Decay series: produce set of reaction series generated to reach stable radioactive nuclei
+    - Generate reactions and visualisation of decay, half live graphs of radioactive entities in products/series etc
+
+2. Radioactive entities - If simply a radioactive element is provided, we generate the decay sequence as described for nuclear reactions.
+    - If simply a radioactive entity is provided, its decomposition reaction/series can be generated
+    - Reactions and graphs at each step are illustrated.
+
+3. Visualisation - We want to generate graphs showing the decay rate of each reacting specie. This function/class can be called for the existing reaction sets also.
+    - Calculate reaction rates for each entity
+    - Generate decay graphs for products and reactants for reversible and irreversible reactions
+    - Generate half-life graph for radioactive particles

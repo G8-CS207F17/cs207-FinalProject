@@ -194,3 +194,9 @@ def test_nasa_missing():
 def test_repr():
     c = chemkin.chemkin(fname)
     assert(repr(c) == 'chemkin()')
+
+'''
+def test_nuclear():
+    1. Test against known reaction steps
+    2. Check against known half-life values
+'''
