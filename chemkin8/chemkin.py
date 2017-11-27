@@ -146,6 +146,8 @@ class backward:
 
 # Adding a new class for nuclear reactions_dict
 class nuclear:
+    """Methods for printing complete nuclear reactions
+    """
     def __init__(v1, v2, r, p):
         """Returns the backward reaction rate coefficient for reach reaction.
 
@@ -156,10 +158,10 @@ class nuclear:
         r: Decay species
         p: Decay products
         """
-        db = sqlite3.connect(self.file + '/nucleardb.sqlite')
-        cursor = db.cursor()
-        emit = {i[0]: i for i in cursor.execute('''SELECT * FROM NUCLEAR_EMISSIONS''').fetchall()}
-        prop = {i[0]: i for i in cursor.execute('''SELECT * FROM ELEMENT_PROPERTIES''').fetchall()}
+        self.db = sqlite3.connect(self.file + '/nucleardb.sqlite')
+        self.cursor = db.cursor()
+        self.emit = {i[0]: i for i in cursor.execute('''SELECT * FROM NUCLEAR_EMISSIONS''').fetchall()}
+        self.prop = {i[0]: i for i in cursor.execute('''SELECT * FROM ELEMENT_PROPERTIES''').fetchall()}
 
         self.v1 = v1
         self.v2 = v2
@@ -172,6 +174,7 @@ class nuclear:
 
     def decay_series_handling():
         # Print series of reactions
+        return None
 
 
 class chemkin:
