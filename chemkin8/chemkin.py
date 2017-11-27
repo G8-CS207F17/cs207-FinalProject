@@ -144,6 +144,19 @@ class backward:
         return kf / kb
 
 
+# Adding a new class for nuclear reactions_dict
+class nuclear:
+    def __init__():
+
+
+    def find_reaction_type():
+        # Change function name and defn upon requirement
+        # Prints nuclear products generated along with reactions
+
+    def decay_series_handling():
+        # Print series of reactions
+
+
 class chemkin:
     def __init__(self, file):
         self.r = 8.314
