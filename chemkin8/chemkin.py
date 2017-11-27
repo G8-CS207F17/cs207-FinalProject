@@ -175,26 +175,45 @@ class nuclear:
             raise ValueError('Database not connected!')
 
         # Assessing if decay series required
-        try:
-            self.find_reaction_type(self.r, self.p, self.v1, self.v2) # Find reaction type of original reaction
-            for i,p in enumerate(self.p):
-                query = '''SELECT STABLE from ELEMENT_PROPERTIES WHERE SYMBOL='%s' and ATOMIC_WEIGHT=%d''' %(p, self.v2[i])
-                status = cursor.execute(query).fetchall()[0][0] # Find status of each product(stable/unstable)
-                if status=='NO':  # Print decay steps of product
-                    self.decay_series_handling(self.p[i], self.v2[i])
-        except:
-            raise ValueError('Element not present in database!')
+        self.find_reaction_type(self.r, self.p, self.v1, self.v2) # Find reaction type of original reaction
+        for i,p in enumerate(self.p):
+            query = '''SELECT STABLE from ELEMENT_PROPERTIES WHERE SYMBOL='%s' and ATOMIC_WEIGHT=%d''' %(p, self.v2[i])
+            status = cursor.execute(query).fetchall()[0][0] # Find status of each product(stable/unstable)
+            if status=='NO':  # Print decay steps of product
+                self.decay_series_handling(self.p[i], self.v2[i])
 
+        return
+
+    def print_reaction(self, r, p, v1, v2, reac_type):
+        print("%s: " %(reac_type), end="")
+
+        for i, each_r in enumerate(r):
+            at_num, at_wt = 10, v1[i]
+            if i==0: print('%s(%d, %d)'%(each_r, at_num, at_wt), end="")
+            else: print('+ %s(%d, %d)'%(each_r, at_num, at_wt), end="")
+
+        print(' --> ', end="")
+        for i, each_p in enumerate(p):
+            at_num, at_wt = 10, v2[i]
+            if i==0: print('%s(%d, %d)'%(each_p, at_num, at_wt), end="")
+            else: print(' + %s(%d, %d)'%(each_p, at_num, at_wt), end="")
+        print()
+        return
 
     def find_reaction_type(self, r, p, v1, v2):
         # Can be used for intermediate reaction in series also
         # Find type of nuclear reaction (stability check not required)
         # Print complete nuclear reaction
+
+        # Printing reaction
+        reac_type='Alpha Decay'
+        self.print_reaction(r, p, v1, v2, reac_type)
         return
 
     def decay_series_handling(self, p, v2):
         # Print series of reactions
-        print('Decay series of %s-%d' %(p,v2))
+        print('\nDecay series of %s-%d' %(p,v2))
+
         return
 
 
