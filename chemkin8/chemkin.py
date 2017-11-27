@@ -146,8 +146,25 @@ class backward:
 
 # Adding a new class for nuclear reactions_dict
 class nuclear:
-    def __init__():
+    def __init__(v1, v2, r, p):
+        """Returns the backward reaction rate coefficient for reach reaction.
 
+        INPUTS
+        =======
+        v1: Atomic weights of the reactants
+        v2: Atomic weights of the products
+        r: Decay species
+        p: Decay products
+        """
+        db = sqlite3.connect(self.file + '/nucleardb.sqlite')
+        cursor = db.cursor()
+        emit = {i[0]: i for i in cursor.execute('''SELECT * FROM NUCLEAR_EMISSIONS''').fetchall()}
+        prop = {i[0]: i for i in cursor.execute('''SELECT * FROM ELEMENT_PROPERTIES''').fetchall()}
+
+        self.v1 = v1
+        self.v2 = v2
+        self.r = r
+        self.p = p
 
     def find_reaction_type():
         # Change function name and defn upon requirement
