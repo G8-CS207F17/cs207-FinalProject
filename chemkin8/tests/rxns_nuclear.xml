@@ -82,50 +82,50 @@
 
         <!-- reaction 07 -->
         <reaction reversible="no" type="Elementary" id="reaction03">
-            <equation>U =] Pb</equation>
+            <equation>U =] Th</equation>
             <rateCoeff>
                 <Nuclear>
                   <halfLife>3.52e+10</halfLife>
                 </Nuclear>
             </rateCoeff>
             <reactants>U:238</reactants>
-            <products>Pb:206</products>
+            <products>Th:234</products>
         </reaction>
 
         <!-- reaction 08 -->
         <reaction reversible="no" type="Elementary" id="reaction03">
-            <equation>U =] Pb</equation>
+            <equation>U =] Th</equation>
             <rateCoeff>
                 <Nuclear>
                   <halfLife>3.52e+10</halfLife>
                 </Nuclear>
             </rateCoeff>
             <reactants>U:235</reactants>
-            <products>Pb:207</products>
+            <products>Th:231</products>
         </reaction>
 
         <!-- reaction 09 -->
         <reaction reversible="no" type="Elementary" id="reaction03">
-            <equation>Th =] Pb</equation>
+            <equation>Th =] Ra</equation>
             <rateCoeff>
                 <Nuclear>
                   <halfLife>3.52e+10</halfLife>
                 </Nuclear>
             </rateCoeff>
             <reactants>Th:232</reactants>
-            <products>Pb:208</products>
+            <products>Ra:228</products>
         </reaction>
 
         <!-- reaction 10 -->
         <reaction reversible="no" type="Elementary" id="reaction03">
-            <equation>Np =] Bi</equation>
+            <equation>Np =] Pa</equation>
             <rateCoeff>
                 <Nuclear>
                   <halfLife>3.52e+10</halfLife>
                 </Nuclear>
             </rateCoeff>
             <reactants>Np:237</reactants>
-            <products>Bi:209</products>
+            <products>Pa:233</products>
         </reaction>
 
     </reactionData>

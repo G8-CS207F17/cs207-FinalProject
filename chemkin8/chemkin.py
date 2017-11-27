@@ -148,34 +148,54 @@ class backward:
 class nuclear:
     """Methods for printing complete nuclear reactions
     """
-    def __init__(v1, v2, r, p):
+    def __init__(self, r, p, v1, v2):
         """Returns the backward reaction rate coefficient for reach reaction.
 
         INPUTS
         =======
-        v1: Atomic weights of the reactants
-        v2: Atomic weights of the products
         r: Decay species
         p: Decay products
+        v1: Atomic weights of the reactants
+        v2: Atomic weights of the products
         """
-        self.db = sqlite3.connect(self.file + '/nucleardb.sqlite')
-        self.cursor = db.cursor()
-        self.emit = {i[0]: i for i in cursor.execute('''SELECT * FROM NUCLEAR_EMISSIONS''').fetchall()}
-        self.prop = {i[0]: i for i in cursor.execute('''SELECT * FROM ELEMENT_PROPERTIES''').fetchall()}
-
-        self.v1 = v1
-        self.v2 = v2
         self.r = r
         self.p = p
+        self.v1 = v1
+        self.v2 = v2
+        self.file = os.path.dirname(os.path.realpath(__file__))
 
-    def find_reaction_type():
-        # Change function name and defn upon requirement
-        # Prints nuclear products generated along with reactions
-        return None
+    def check_stable(self):
 
-    def decay_series_handling():
+        # Connecting to db
+        db, cursor = None, None
+        try:
+            db = sqlite3.connect(self.file + '/nucleardb.sqlite')
+            cursor = db.cursor()
+        except:
+            raise ValueError('Database not connected!')
+
+        # Assessing if decay series required
+        try:
+            self.find_reaction_type(self.r, self.p, self.v1, self.v2) # Find reaction type of original reaction
+            for i,p in enumerate(self.p):
+                query = '''SELECT STABLE from ELEMENT_PROPERTIES WHERE SYMBOL='%s' and ATOMIC_WEIGHT=%d''' %(p, self.v2[i])
+                status = cursor.execute(query).fetchall()[0][0] # Find status of each product(stable/unstable)
+                if status=='NO':  # Print decay steps of product
+                    self.decay_series_handling(self.p[i], self.v2[i])
+        except:
+            raise ValueError('Element not present in database!')
+
+
+    def find_reaction_type(self, r, p, v1, v2):
+        # Can be used for intermediate reaction in series also
+        # Find type of nuclear reaction (stability check not required)
+        # Print complete nuclear reaction
+        return
+
+    def decay_series_handling(self, p, v2):
         # Print series of reactions
-        return None
+        print('Decay series of %s-%d' %(p,v2))
+        return
 
 
 class chemkin:

@@ -14,13 +14,19 @@ fname2 = os.path.join(test_data_dir, 'rxnset_long.xml')
 fname3 = os.path.join(test_data_dir, 'rxns_reversible.xml')
 
 c = chemkin.chemkin(fname1)
-print(c.reaction_rates(x1, T))
+# print(c.reaction_rates(x1, T))
 
 c = chemkin.chemkin(fname2)
-print(c.reaction_rates(x2, T))
+# print(c.reaction_rates(x2, T))
 
 c = chemkin.chemkin(fname3)
-print(c.reaction_rates(x2, T))
+# print(c.reaction_rates(x2, T))
 
-print("NASA Coeffs:", c.NASAcoeffs())
+# print("NASA Coeffs:", c.NASAcoeffs())
 
+
+# Small Test:
+import chemkin as cmod
+cmod.chemkin(fname1)
+n = cmod.nuclear(['Ra'], ['Rn','Pb'], [226], [222, 214]) # Just an example, not an actual reaction
+n = n.check_stable()
