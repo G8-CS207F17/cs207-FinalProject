@@ -171,6 +171,7 @@ class nuclear:
     def find_reaction_type():
         # Change function name and defn upon requirement
         # Prints nuclear products generated along with reactions
+        return None
 
     def decay_series_handling():
         # Print series of reactions
