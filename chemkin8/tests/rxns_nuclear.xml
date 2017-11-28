@@ -3,7 +3,7 @@
 <ctml>
 
     <phase>
-        <speciesArray> Ra Rn C N B Fe Mn Th Pd Te U Pb Np Bi </speciesArray>
+        <speciesArray> Ra Rn C N B Fe Mn Th Pd Te U Pb Np Bi Th* Cf Pa</speciesArray>
     </phase>
 
     <reactionData id="nuclear_reactions">
