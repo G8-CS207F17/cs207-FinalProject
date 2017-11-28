@@ -24,13 +24,13 @@ c = chemkin.chemkin(fname2)
 # print(c.reaction_rates(x2, T))
 
 c = chemkin.chemkin(fname3)
-print(c.reaction_rates(x2, T))
+#print(c.reaction_rates(x2, T))
 
 c = chemkin.chemkin(fname4)
-print(c.reaction_rates(x2, T))
+#print(c.reaction_rates(x2, T))
 
 c = chemkin.chemkin(fname5)
-print(c.reaction_rates(x2, T))
+#print(c.reaction_rates(x2, T))
 
 # Small Test:
 import chemkin as cmod
