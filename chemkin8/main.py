@@ -26,10 +26,10 @@ c = chemkin.chemkin(fname2)
 c = chemkin.chemkin(fname3)
 #print(c.reaction_rates(x2, T))
 
-c = chemkin.chemkin(fname4)
+# c = chemkin.chemkin(fname4)
 #print(c.reaction_rates(x2, T))
 
-c = chemkin.chemkin(fname5)
+# c = chemkin.chemkin(fname5)
 #print(c.reaction_rates(x2, T))
 
 # Small Test:
@@ -37,4 +37,4 @@ import chemkin as cmod
 cmod.chemkin(fname1)
 n = cmod.nuclear(['U'], ['Th'], [238], [234]) # Just an example, not an actual reaction
 # n = n.check_stable()
-n.generate_decay_series()
+n.generate_decay_series('Np', 237)
