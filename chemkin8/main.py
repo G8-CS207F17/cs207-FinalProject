@@ -28,5 +28,6 @@ c = chemkin.chemkin(fname3)
 # Small Test:
 import chemkin as cmod
 cmod.chemkin(fname1)
-n = cmod.nuclear(['Ra'], ['Rn','Pb'], [226], [222, 214]) # Just an example, not an actual reaction
-n = n.check_stable()
+n = cmod.nuclear(['U'], ['Th'], [238], [234]) # Just an example, not an actual reaction
+# n = n.check_stable()
+n.generate_decay_series()

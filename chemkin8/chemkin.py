@@ -146,18 +146,18 @@ class backward:
 
 # Adding a new class for nuclear reactions_dict
 class nuclear:
-    """Methods for printing complete nuclear reactions
-    """
-    def __init__(self, r, p, v1, v2):
-        """Returns the backward reaction rate coefficient for reach reaction.
+    """Methods for completing nuclear reactions
 
-        INPUTS
-        =======
-        r: Decay species
-        p: Decay products
-        v1: Atomic weights of the reactants
-        v2: Atomic weights of the products
-        """
+    check_stable: Checks if reaction products are stable or
+                  decay further
+    print_reaction:  Prints complete reaction with its type
+    find_reaction_type: Detects the reaction type and prints
+                        the complete reaction
+    generate_decay_series:  Generates the decay sequence for
+                            an unstable radioactive product
+    """
+
+    def __init__(self, r, p, v1, v2):
         self.r = r
         self.p = p
         self.v1 = v1
@@ -165,8 +165,13 @@ class nuclear:
         self.file = os.path.dirname(os.path.realpath(__file__))
 
     def check_stable(self):
+        """Checks if reaction initialized is atble or decays further
 
-        # Connecting to db
+        EXAMPLES
+        ========
+        >>> n = nuclear(['U'], ['Th'], [238], [234])
+        >>> n.check_stable()
+        """
         db, cursor = None, None
         try:
             db = sqlite3.connect(self.file + '/nucleardb.sqlite')
@@ -175,45 +180,144 @@ class nuclear:
             raise ValueError('Database not connected!')
 
         # Assessing if decay series required
-        self.find_reaction_type(self.r, self.p, self.v1, self.v2) # Find reaction type of original reaction
+        self.find_reaction_type()     # Find reaction type of original reaction
         for i,p in enumerate(self.p):
             query = '''SELECT STABLE from ELEMENT_PROPERTIES WHERE SYMBOL='%s' and ATOMIC_WEIGHT=%d''' %(p, self.v2[i])
             status = cursor.execute(query).fetchall()[0][0] # Find status of each product(stable/unstable)
-            if status=='NO':  # Print decay steps of product
-                self.decay_series_handling(self.p[i], self.v2[i])
+            if status=='NO':          # Print decay steps of product
+                self.generate_decay_series(self.p[i], self.v2[i])
 
-        return
 
-    def print_reaction(self, r, p, v1, v2, reac_type):
+    def print_reaction(self, r, p, n1, n2, v1, v2, reac_type):  # n1, n2 are atomic numbers
+        """Prints the complete reaction
+
+        INPUTS
+        =======
+        r: array of strings, symbol of each reactant
+        p: array of strings, symbol of each product
+        n1: array of float, atomic number of each reactant
+        n2: array of float, atomic number of each product
+        v1: array of float, atomic weight of each reactant
+        v2: array of float, atomic weight of each product
+        reac_type: array of string, nature of each nuclear reaction
+
+
+        EXAMPLES
+        ========
+        >>> n = nuclear(['U'], ['Th'], [238], [234])
+        >>> n.print_reaction(['U'], ['Th', 'alpha'], [92], [90, 2], [238], [234, 4], 'Alpha Decay')()
+        Alpha Decay: U(92, 238) --> Th(90, 234) + alpha(2, 4)
+        """
         print("%s: " %(reac_type), end="")
 
-        for i, each_r in enumerate(r):
-            at_num, at_wt = 10, v1[i]
-            if i==0: print('%s(%d, %d)'%(each_r, at_num, at_wt), end="")
-            else: print('+ %s(%d, %d)'%(each_r, at_num, at_wt), end="")
-
+        print('%s(%d, %d)'%(r[0], n1[0], v1[0]), end="")
+        for i, each_r in enumerate(r[1:]):
+            print('+ %s(%d, %d)'%(each_r, n1[i], v1[i]), end="")
         print(' --> ', end="")
-        for i, each_p in enumerate(p):
-            at_num, at_wt = 10, v2[i]
-            if i==0: print('%s(%d, %d)'%(each_p, at_num, at_wt), end="")
-            else: print(' + %s(%d, %d)'%(each_p, at_num, at_wt), end="")
-        print()
-        return
 
-    def find_reaction_type(self, r, p, v1, v2):
+        print('%s(%d, %d)'%(p[0], n2[0], v2[0]), end="")
+        for i, each_p in enumerate(p[1:]):
+            print(' + %s(%d, %d)'%(each_p, n2[i], v2[i]), end="")
+        print()
+
+
+    def find_reaction_type(self):
         # Can be used for intermediate reaction in series also
         # Find type of nuclear reaction (stability check not required)
         # Print complete nuclear reaction
 
         # Printing reaction
         reac_type='Alpha Decay'
-        self.print_reaction(r, p, v1, v2, reac_type)
+        self.print_reaction(self.r, self.p, [10], [10,10], self.v1, self.v2, reac_type)
         return
 
-    def decay_series_handling(self, p, v2):
-        # Print series of reactions
-        print('\nDecay series of %s-%d' %(p,v2))
 
+    def generate_decay_series(self, p=None, v2=None):
+        """Prints radiactive decay series of element
+
+        INPUTS
+        =======
+        p: single string, symbol of radioactive element
+        v2: single float value, atomic weight of radioactive element
+
+        EXAMPLES
+        ========
+        >>> n = nuclear(['U'], ['Th'], [238], [234])
+        >>> n.generate_decay_series()
+        Decay of U-238
+        Alpha Decay: U(92, 238) --> Th(90, 234)
+        Beta Decay: Th(90, 234) --> Pa(91, 234)
+        Beta Decay: Pa(91, 234) --> U(92, 234)
+        Alpha Decay: U(92, 234) --> Th(90, 230)
+        Alpha Decay: Th(90, 230) --> Ra(88, 226)
+        Alpha Decay: Ra(88, 226) --> Rn(86, 222)
+        Alpha Decay: Rn(86, 222) --> Po(84, 218)
+        Alpha Decay: Po(84, 218) --> Pb(82, 214)
+        Beta Decay: Pb(82, 214) --> Bi(83, 214)
+        Beta Decay: Bi(83, 214) --> Po(84, 214)
+        Alpha Decay: Po(84, 214) --> Pb(82, 210)
+        Beta Decay: Pb(82, 210) --> Bi(83, 210)
+        Beta Decay: Bi(83, 210) --> Po(84, 210)
+        Alpha Decay: Po(84, 210) --> Pb(82, 206)
+
+        """
+        # Connect to DB
+        db = sqlite3.connect(self.file + '/nucleardb.sqlite')
+        cursor = db.cursor()
+
+        # Print series of reactions
+        if p==None: p = self.p[0]
+        if v2==None: v2=self.v2[0]
+
+        prev_step, status = 'alpha', 'NO'
+        cur_r, at_wt = p, v2
+        at_num = int(cursor.execute('''SELECT ATOMIC_NUMBER from ELEMENT_PROPERTIES WHERE SYMBOL='%s' and ATOMIC_WEIGHT=%d''' %(p, at_wt)).fetchall()[0][0])
+
+        print('\nDecay of %s-%d' %(p,v2))
+        while status=='NO':
+            cur_step, cur_p = None, None
+
+            # 1. Find alpha and beta decay products
+            query = '''SELECT * from ELEMENT_PROPERTIES WHERE ATOMIC_NUMBER='%d' and ATOMIC_WEIGHT=%d'''
+            try:
+                alpha = cursor.execute(query %(at_num-2, at_wt-4)).fetchall()[0]
+            except:
+                alpha = None
+
+            try:
+                beta = cursor.execute(query %(at_num+1, at_wt)).fetchall()[0]
+            except:
+                beta = None
+
+            # 2. Check if reaction exists
+            if alpha == None and beta == None:
+                print('Further reaction not recorded')
+                break
+
+            # 3. If any one step makes it stable, select that
+            if alpha!=None and beta!=None:
+                if alpha[4]=='YES' and beta[4]!='YES': cur_step='alpha'
+                elif beta[4]=='YES' and alpha[4]!='YES': cur_step='beta'
+
+            # 4. If both make it stable or only one further step, find next reaction step, preferably one that ensures balanced decline (alternate alpha, beta)
+            if cur_step == None:
+                if prev_step == 'alpha':
+                    if beta!=None: cur_step = 'beta'
+                    else: cur_step = 'alpha'
+                elif prev_step == 'beta':
+                    if alpha!=None: cur_step = 'alpha'
+                    else: cur_step = 'beta'
+
+            # 5. Print step and reset variables for next step
+            if cur_step=='alpha':
+                self.print_reaction([cur_r], [alpha[0]], [at_num], [int(alpha[2])], [at_wt], [float(alpha[3])], 'Alpha Decay')
+                cur_p, status = alpha[0], alpha[4]
+                at_num, at_wt = at_num-2, at_wt-4
+            elif cur_step=='beta':
+                self.print_reaction([cur_r], [beta[0]], [at_num], [int(beta[2])], [at_wt], [float(beta[3])], 'Beta Decay')
+                cur_p, status = beta[0], beta[4]
+                at_num += 1
+            prev_step, cur_r = cur_step, cur_p
         return
 
 
