@@ -172,10 +172,10 @@ class nuclear:
         >>> n = nuclear(['U'], ['Th'], [238], [234])
         >>> n.check_stable()
         """
-        db, cursor = None, None
+        db, self.cursor = None, None
         try:
             db = sqlite3.connect(self.file + '/nucleardb.sqlite')
-            cursor = db.cursor()
+            self.cursor = db.cursor()
         except:
             raise ValueError('Database not connected!')
 
@@ -183,7 +183,7 @@ class nuclear:
         self.find_reaction_type()     # Find reaction type of original reaction
         for i,p in enumerate(self.p):
             query = '''SELECT STABLE from ELEMENT_PROPERTIES WHERE SYMBOL='%s' and ATOMIC_WEIGHT=%d''' %(p, self.v2[i])
-            status = cursor.execute(query).fetchall()[0][0] # Find status of each product(stable/unstable)
+            status = self.cursor.execute(query).fetchall()[0][0] # Find status of each product(stable/unstable)
             if status=='NO':          # Print decay steps of product
                 self.generate_decay_series(self.p[i], self.v2[i])
 
@@ -225,9 +225,28 @@ class nuclear:
         # Can be used for intermediate reaction in series also
         # Find type of nuclear reaction (stability check not required)
         # Print complete nuclear reaction
+        print()
+
+        if len(self.p) == 2:
+            reac_type = 'Spontaneous Fission'
+        elif len(self.r) == 2:
+            reac_type = 'Electron Capture'
+        else:
+            if self.r[0].strip('*') == self.p[0]:
+                reac_type = 'Gamma Emission'
+            elif self.v1[0] - self.v2[0] == 4:
+                reac_type = 'Alpha Decay'
+            else:
+                z1 = self.cursor.execute('''SELECT ATOMIC_NUMBER FROM ELEMENT_PROPERTIES WHERE SYMBOL = "%s"'''%self.r[0]).fetchall()[0][0]
+                z2 = self.cursor.execute('''SELECT ATOMIC_NUMBER FROM ELEMENT_PROPERTIES WHERE SYMBOL = "%s"'''%self.p[0]).fetchall()[0][0]
+                if int(z1) == int(z2) - 1:
+                    reac_type = 'Beta Decay'
+                elif int(z1) == int(z2) + 1:
+                    reac_type = 'Positron Emission'
+                else:
+                    raise ValueError('No reaction type found. Please check your XML.')
 
         # Printing reaction
-        reac_type='Alpha Decay'
         self.print_reaction(self.r, self.p, [10], [10,10], self.v1, self.v2, reac_type)
         return
 
