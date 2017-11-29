@@ -228,9 +228,10 @@ class nuclear:
         print()
 
         if len(self.p) == 2:
-            reac_type = 'Spontaneous Fission'
-        elif len(self.r) == 2:
-            reac_type = 'Electron Capture'
+            if 'Xray' in self.p:
+                reac_type = 'Electron Capture'
+            else:
+                reac_type = 'Spontaneous Fission'            
         else:
             if self.r[0].strip('*') == self.p[0]:
                 reac_type = 'Gamma Emission'
