@@ -157,12 +157,13 @@ class nuclear:
                             an unstable radioactive product
     """
 
-    def __init__(self, r, p, v1, v2):
-        self.r = r
-        self.p = p
-        self.v1 = v1
-        self.v2 = v2
+    def __init__(self, file):
+        self.reactions = []
         self.file = os.path.dirname(os.path.realpath(__file__))
+        self.parse(file)
+
+    def parse(self):
+        self.reactions = parseNuclear(file)
 
     def check_stable(self):
         """Checks if reaction initialized is atble or decays further
@@ -180,12 +181,13 @@ class nuclear:
             raise ValueError('Database not connected!')
 
         # Assessing if decay series required
-        self.find_reaction_type()     # Find reaction type of original reaction
-        for i,p in enumerate(self.p):
-            query = '''SELECT STABLE from ELEMENT_PROPERTIES WHERE SYMBOL='%s' and ATOMIC_WEIGHT=%d''' %(p, self.v2[i])
-            status = self.cursor.execute(query).fetchall()[0][0] # Find status of each product(stable/unstable)
-            if status=='NO':          # Print decay steps of product
-                self.generate_decay_series(self.p[i], self.v2[i])
+        for reaction in self.reactions:
+            self.find_reaction_type(reaction)     # Find reaction type of original reaction
+            for i,p in enumerate(reaction['products']):
+                query = '''SELECT STABLE from ELEMENT_PROPERTIES WHERE SYMBOL='%s' and ATOMIC_WEIGHT=%d''' %(p, reaction['p_mass'][i])
+                status = self.cursor.execute(query).fetchall()[0][0] # Find status of each product(stable/unstable)
+                if status=='NO':          # Print decay steps of product
+                    self.generate_decay_series(reaction['products'][i], reaction['p_mass'][i])
 
 
     def print_reaction(self, r, p, n1, n2, v1, v2, reac_type):  # n1, n2 are atomic numbers
@@ -221,25 +223,26 @@ class nuclear:
         print()
 
 
-    def find_reaction_type(self):
+    def find_reaction_type(self, reaction):
         # Can be used for intermediate reaction in series also
         # Find type of nuclear reaction (stability check not required)
         # Print complete nuclear reaction
         print()
 
-        if len(self.p) == 2:
-            if 'Xray' in self.p:
+        z1 = self.cursor.execute('''SELECT ATOMIC_NUMBER FROM ELEMENT_PROPERTIES WHERE SYMBOL = "%s"'''%self.r[0]).fetchall()[0][0]
+        z2 = self.cursor.execute('''SELECT ATOMIC_NUMBER FROM ELEMENT_PROPERTIES WHERE SYMBOL = "%s"'''%self.p[0]).fetchall()[0][0]
+
+        if len(reaction['products']) == 2:
+            if 'Xray' in reaction['products']:
                 reac_type = 'Electron Capture'
             else:
                 reac_type = 'Spontaneous Fission'            
         else:
-            if self.r[0].strip('*') == self.p[0]:
+            if reaction['reactants'][0].strip('*') == reaction['products'][0]:
                 reac_type = 'Gamma Emission'
-            elif self.v1[0] - self.v2[0] == 4:
+            elif reaction['r_mass'][0] - reaction['p_mass'][0] == 4:
                 reac_type = 'Alpha Decay'
             else:
-                z1 = self.cursor.execute('''SELECT ATOMIC_NUMBER FROM ELEMENT_PROPERTIES WHERE SYMBOL = "%s"'''%self.r[0]).fetchall()[0][0]
-                z2 = self.cursor.execute('''SELECT ATOMIC_NUMBER FROM ELEMENT_PROPERTIES WHERE SYMBOL = "%s"'''%self.p[0]).fetchall()[0][0]
                 if int(z1) == int(z2) - 1:
                     reac_type = 'Beta Decay'
                 elif int(z1) == int(z2) + 1:
@@ -248,7 +251,7 @@ class nuclear:
                     raise ValueError('No reaction type found. Please check your XML.')
 
         # Printing reaction
-        self.print_reaction(self.r, self.p, [10], [10,10], self.v1, self.v2, reac_type)
+        self.print_reaction(reaction['reactants'], reaction['products'], z1, z2, reaction['r_mass'], reaction['p_mass'], reac_type)
         return
 
 
