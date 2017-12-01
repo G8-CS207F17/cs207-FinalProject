@@ -45,7 +45,7 @@
         </reaction>
 
         <!-- reaction 04 -->
-        <reaction reversible="no" type="Elementary" id="reaction03">
+        <reaction reversible="no" type="Elementary" id="reaction04">
             <equation>Fe =] Mn</equation>
             <rateCoeff>
                 <Nuclear>
@@ -57,7 +57,7 @@
         </reaction>
 
         <!-- reaction 05 -->
-        <reaction reversible="no" type="Elementary" id="reaction03">
+        <reaction reversible="no" type="Elementary" id="reaction05">
             <equation>Th* =] Th</equation>
             <rateCoeff>
                 <Nuclear>
@@ -69,7 +69,7 @@
         </reaction>
 
         <!-- reaction 06 -->
-        <reaction reversible="no" type="Elementary" id="reaction03">
+        <reaction reversible="no" type="Elementary" id="reaction06">
             <equation>Cf =] Pd + Te</equation>
             <rateCoeff>
                 <Nuclear>
@@ -81,7 +81,7 @@
         </reaction>
 
         <!-- reaction 07 -->
-        <reaction reversible="no" type="Elementary" id="reaction03">
+        <reaction reversible="no" type="Elementary" id="reaction07">
             <equation>U =] Th</equation>
             <rateCoeff>
                 <Nuclear>
@@ -93,7 +93,7 @@
         </reaction>
 
         <!-- reaction 08 -->
-        <reaction reversible="no" type="Elementary" id="reaction03">
+        <reaction reversible="no" type="Elementary" id="reaction08">
             <equation>U =] Th</equation>
             <rateCoeff>
                 <Nuclear>
@@ -105,7 +105,7 @@
         </reaction>
 
         <!-- reaction 09 -->
-        <reaction reversible="no" type="Elementary" id="reaction03">
+        <reaction reversible="no" type="Elementary" id="reaction09">
             <equation>Th =] Ra</equation>
             <rateCoeff>
                 <Nuclear>
@@ -117,7 +117,7 @@
         </reaction>
 
         <!-- reaction 10 -->
-        <reaction reversible="no" type="Elementary" id="reaction03">
+        <reaction reversible="no" type="Elementary" id="reaction10">
             <equation>Np =] Pa</equation>
             <rateCoeff>
                 <Nuclear>
