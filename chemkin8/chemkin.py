@@ -2,6 +2,7 @@ import numpy as np
 import sqlite3
 import os
 from chemkin8.parser import *
+from parser import * # to be deleted
 
 
 class backward:
@@ -162,10 +163,10 @@ class nuclear:
         self.file = os.path.dirname(os.path.realpath(__file__))
         self.parse(file)
 
-    def parse(self):
-        self.reactions = parseNuclear(file)
+    def parse(self, file):
+        self.reactions = parseNuclearXML(file)
 
-    def check_stable(self):
+    def print_reaction(self, verbose = True):
         """Checks if reaction initialized is atble or decays further
 
         EXAMPLES
@@ -180,17 +181,33 @@ class nuclear:
         except:
             raise ValueError('Database not connected!')
 
+        reac_str = ''
         # Assessing if decay series required
-        for reaction in self.reactions:
-            self.find_reaction_type(reaction)     # Find reaction type of original reaction
+        for i, reaction in enumerate(self.reactions):
+            if i > 0: reac_str += '\n\n' 
+            reac_str += '================= Reaction %d =================\n'%(i+1)
+            reac_str += self.find_reaction_type(reaction)     # Find reaction type of original reaction
             for i,p in enumerate(reaction['products']):
                 query = '''SELECT STABLE from ELEMENT_PROPERTIES WHERE SYMBOL='%s' and ATOMIC_WEIGHT=%d''' %(p, reaction['p_mass'][i])
                 status = self.cursor.execute(query).fetchall()[0][0] # Find status of each product(stable/unstable)
                 if status=='NO':          # Print decay steps of product
-                    self.generate_decay_series(reaction['products'][i], reaction['p_mass'][i])
+                    reac_str += '\n\tProducts not stable. Further reactions initiated.\n'
+                    reac_str += self.generate_decay_series(reaction['products'][i], reaction['p_mass'][i])
+                else:
+                    reac_str += '\nProducts stable. No further reactions.'
 
 
-    def print_reaction(self, r, p, n1, n2, v1, v2, reac_type):  # n1, n2 are atomic numbers
+        if verbose:
+            print(reac_str)
+
+        reac_output = open("reac_output.txt", "w")
+        reac_output.write(reac_str)
+        reac_output.close()
+
+        return None
+
+
+    def reaction_string(self, r, p, n1, n2, v1, v2, reac_type):  # n1, n2 are atomic numbers
         """Prints the complete reaction
 
         INPUTS
@@ -210,27 +227,36 @@ class nuclear:
         >>> n.print_reaction(['U'], ['Th', 'alpha'], [92], [90, 2], [238], [234, 4], 'Alpha Decay')()
         Alpha Decay: U(92, 238) --> Th(90, 234) + alpha(2, 4)
         """
-        print("%s: " %(reac_type), end="")
 
-        print('%s(%d, %d)'%(r[0], n1[0], v1[0]), end="")
+        reac_str = "%s: %s(%s, %d)" %(reac_type, r[0], n1[0], v1[0])
+        
         for i, each_r in enumerate(r[1:]):
-            print('+ %s(%d, %d)'%(each_r, n1[i], v1[i]), end="")
-        print(' --> ', end="")
+            reac_str += '+ %s(%s, %d)'%(each_r, n1[i], v1[i])
+        
+        reac_str += ' --> %s(%s, %d)'%(p[0], n2[0], v2[0])
 
-        print('%s(%d, %d)'%(p[0], n2[0], v2[0]), end="")
         for i, each_p in enumerate(p[1:]):
-            print(' + %s(%d, %d)'%(each_p, n2[i], v2[i]), end="")
-        print()
+            reac_str += ' + %s(%s, %d)'%(each_p, n2[i], v2[i])
+
+        return reac_str
 
 
     def find_reaction_type(self, reaction):
         # Can be used for intermediate reaction in series also
         # Find type of nuclear reaction (stability check not required)
         # Print complete nuclear reaction
-        print()
 
-        z1 = self.cursor.execute('''SELECT ATOMIC_NUMBER FROM ELEMENT_PROPERTIES WHERE SYMBOL = "%s"'''%self.r[0]).fetchall()[0][0]
-        z2 = self.cursor.execute('''SELECT ATOMIC_NUMBER FROM ELEMENT_PROPERTIES WHERE SYMBOL = "%s"'''%self.p[0]).fetchall()[0][0]
+        z1, z2 = [], []
+        for r in reaction['reactants']:
+            try:
+                z1.append(self.cursor.execute('''SELECT ATOMIC_NUMBER FROM ELEMENT_PROPERTIES WHERE SYMBOL = "%s"'''%r).fetchall()[0][0])
+            except:
+                z1.append('nan')
+        for p in reaction['products']:
+            try:
+                z2.append(self.cursor.execute('''SELECT ATOMIC_NUMBER FROM ELEMENT_PROPERTIES WHERE SYMBOL = "%s"'''%p).fetchall()[0][0])
+            except:
+                z2.append('nan')
 
         if len(reaction['products']) == 2:
             if 'Xray' in reaction['products']:
@@ -243,16 +269,16 @@ class nuclear:
             elif reaction['r_mass'][0] - reaction['p_mass'][0] == 4:
                 reac_type = 'Alpha Decay'
             else:
-                if int(z1) == int(z2) - 1:
+                if int(z1[0]) == int(z2[0]) - 1:
                     reac_type = 'Beta Decay'
-                elif int(z1) == int(z2) + 1:
+                elif int(z1[0]) == int(z2[0]) + 1:
                     reac_type = 'Positron Emission'
                 else:
                     raise ValueError('No reaction type found. Please check your XML.')
 
         # Printing reaction
-        self.print_reaction(reaction['reactants'], reaction['products'], z1, z2, reaction['r_mass'], reaction['p_mass'], reac_type)
-        return
+        reac_str = self.reaction_string(reaction['reactants'], reaction['products'], z1, z2, reaction['r_mass'], reaction['p_mass'], reac_type)
+        return reac_str
 
 
     def generate_decay_series(self, p=None, v2=None):
@@ -296,7 +322,7 @@ class nuclear:
         cur_r, at_wt = p, v2
         at_num = int(cursor.execute('''SELECT ATOMIC_NUMBER from ELEMENT_PROPERTIES WHERE SYMBOL='%s' and ATOMIC_WEIGHT=%d''' %(p, at_wt)).fetchall()[0][0])
 
-        print('\nDecay of %s-%d' %(p,v2))
+        decay_str = 'Further reaction: Decay of %s-%d' %(p,v2)
         while status=='NO':
             cur_step, cur_p = None, None
 
@@ -314,7 +340,7 @@ class nuclear:
 
             # 2. Check if reaction exists
             if alpha == None and beta == None:
-                print('Further reaction not recorded')
+                decay_str += '\nFurther reaction not recorded'
                 break
 
             # 3. If any one step makes it stable, select that
@@ -333,15 +359,15 @@ class nuclear:
 
             # 5. Print step and reset variables for next step
             if cur_step=='alpha':
-                self.print_reaction([cur_r], [alpha[0]], [at_num], [int(alpha[2])], [at_wt], [float(alpha[3])], 'Alpha Decay')
+                decay_str += '\n\t%s'%self.reaction_string([cur_r], [alpha[0]], [at_num], [int(alpha[2])], [at_wt], [float(alpha[3])], 'Alpha Decay')
                 cur_p, status = alpha[0], alpha[4]
                 at_num, at_wt = at_num-2, at_wt-4
             elif cur_step=='beta':
-                self.print_reaction([cur_r], [beta[0]], [at_num], [int(beta[2])], [at_wt], [float(beta[3])], 'Beta Decay')
+                decay_str += '\n\t%s'%self.reaction_string([cur_r], [beta[0]], [at_num], [int(beta[2])], [at_wt], [float(beta[3])], 'Beta Decay')
                 cur_p, status = beta[0], beta[4]
                 at_num += 1
             prev_step, cur_r = cur_step, cur_p
-        return
+        return decay_str
 
 
 class chemkin:
