@@ -3,6 +3,8 @@ import sqlite3
 import os
 from chemkin8.parser import *
 from parser import * # to be deleted
+import datetime
+import matplotlib.pyplot as plt
 
 
 class backward:
@@ -145,6 +147,66 @@ class backward:
         return kf / kb
 
 
+
+class visualisations:
+    def __init__(self, path):
+        self.dir_path = path
+
+    def draw_decay_graph(self, halfLife, ele):
+        # Half life is accepted in minutes
+        k = np.log(2)/halfLife
+        ts = np.linspace(0,10*halfLife,1001)
+        As = [np.exp(-k*t) for t in ts]
+
+        plt.plot(ts, As)
+        plt.ylabel('Fraction of initial Concentration')
+        plt.xlabel('Time (mins)')
+        plt.title('Decay graph for %s, k = %e' %(ele,k))
+
+        plt.xlim(0,10*halfLife)
+        plt.ylim(0,1)
+        plt.savefig(self.dir_path+ele+'.png')
+        return None
+
+    def draw_decay_series(self, steps, name):
+        ele, Zs, As = steps[0], steps[1], steps[2]
+
+        plt.scatter(Zs, As, color='k')
+        for i in range(len(Zs)-1):
+            if Zs[i+1]-Zs[i]<0: # alpha decay
+                plt.arrow(Zs[i], As[i], Zs[i+1]-Zs[i]+0.02, As[i+1]-As[i]+0.02, color='#FFAF0D', head_width=0.3, head_length=0.2, length_includes_head=True)
+            else: # beta decay
+                plt.arrow(Zs[i], As[i], Zs[i+1]-Zs[i]-0.02, As[i+1]-As[i], color='#C20B59', head_width=0.3, head_length=0.2,  length_includes_head=True)
+
+        plt.xlabel('Number of protons, Z')
+        plt.ylabel('Mass Number, A')
+        plt.xlim(Zs[-1]-4, Zs[0]+4)
+        plt.ylim(As[-1]-4, As[0]+4)
+
+        ele_dict = {}
+        for i in np.arange(Zs[-1]-4, Zs[0]+4): ele_dict[i] = ''
+        for i in range(len(Zs)): ele_dict[Zs[i]] = ele[i]
+
+        labels = []
+        for i in np.arange(Zs[-1]-4, Zs[0]+4):
+            if ele_dict[i]=='': labels.append(str(i))
+            else: labels.append(str(i)+'\n'+ele_dict[i])
+
+        plt.xticks(np.arange(Zs[-1]-4, Zs[0]+4), labels)
+        plt.yticks(np.arange(As[-1]-4, As[0]+5, 2))
+
+        plt.title('Decay series for '+name)
+
+        plt.plot([0,0], [0.5,0.6], color='#FFAF0D', label='Alpha Decay'),
+        plt.plot([1,1], [1.5,1.6], color='#C20B59', label='Beta Decay')
+        plt.legend()
+
+        plt.tight_layout()
+        plt.savefig(self.dir_path+name+'.png')
+        plt.gcf().clear()
+        return None
+
+
 # Adding a new class for nuclear reactions_dict
 class nuclear:
     """Methods for completing nuclear reactions
@@ -166,7 +228,7 @@ class nuclear:
     def parse(self, file):
         self.reactions = parseNuclearXML(file)
 
-    def print_reaction(self, verbose = True):
+    def print_reaction(self, verbose = True, visualise = True):
         """Checks if reaction initialized is atble or decays further
 
         EXAMPLES
@@ -181,10 +243,21 @@ class nuclear:
         except:
             raise ValueError('Database not connected!')
 
+
+        now = datetime.datetime.now()
+        dir_path = "outputs/"+now.isoformat()+"/"
+        file_path = dir_path+"reac_output.txt"
+
+        v = None
+        if visualise:
+            v = visualisations(dir_path)
+            if not os.path.exists(dir_path):
+                os.makedirs(os.path.dirname(dir_path))
+
         reac_str = ''
         # Assessing if decay series required
         for i, reaction in enumerate(self.reactions):
-            if i > 0: reac_str += '\n\n' 
+            if i > 0: reac_str += '\n\n'
             reac_str += '================= Reaction %d =================\n'%(i+1)
             reac_str += self.find_reaction_type(reaction)     # Find reaction type of original reaction
             for i,p in enumerate(reaction['products']):
@@ -192,17 +265,23 @@ class nuclear:
                 status = self.cursor.execute(query).fetchall()[0][0] # Find status of each product(stable/unstable)
                 if status=='NO':          # Print decay steps of product
                     reac_str += '\n\tProducts not stable. Further reactions initiated.\n'
-                    reac_str += self.generate_decay_series(reaction['products'][i], reaction['p_mass'][i])
+                    # ele_arr = [[reaction['reactants'][0]]] - Add starting element maybe @MSR
+                    name = reaction['reactants'][0]+'-'+str(int(reaction['r_mass'][0]))
+                    reac_str += self.generate_decay_series(reaction['products'][i], reaction['p_mass'][i], v, name)
                 else:
                     reac_str += '\nProducts stable. No further reactions.'
+                    if visualise:
+                        name = reaction['reactants'][0]+'-'+str(int(reaction['r_mass'][0]))
+                        v.draw_decay_graph(reaction['halfLife'], name)
 
 
         if verbose:
             print(reac_str)
 
-        reac_output = open("reac_output.txt", "w")
+        reac_output = open(file_path, "w")
         reac_output.write(reac_str)
         reac_output.close()
+
 
         return None
 
@@ -229,10 +308,10 @@ class nuclear:
         """
 
         reac_str = "%s: %s(%s, %d)" %(reac_type, r[0], n1[0], v1[0])
-        
+
         for i, each_r in enumerate(r[1:]):
             reac_str += '+ %s(%s, %d)'%(each_r, n1[i], v1[i])
-        
+
         reac_str += ' --> %s(%s, %d)'%(p[0], n2[0], v2[0])
 
         for i, each_p in enumerate(p[1:]):
@@ -262,7 +341,7 @@ class nuclear:
             if 'Xray' in reaction['products']:
                 reac_type = 'Electron Capture'
             else:
-                reac_type = 'Spontaneous Fission'            
+                reac_type = 'Spontaneous Fission'
         else:
             if reaction['reactants'][0].strip('*') == reaction['products'][0]:
                 reac_type = 'Gamma Emission'
@@ -281,7 +360,7 @@ class nuclear:
         return reac_str
 
 
-    def generate_decay_series(self, p=None, v2=None):
+    def generate_decay_series(self, p=None, v2=None, vizObj = None, name=None):
         """Prints radiactive decay series of element
 
         INPUTS
@@ -323,6 +402,10 @@ class nuclear:
         at_num = int(cursor.execute('''SELECT ATOMIC_NUMBER from ELEMENT_PROPERTIES WHERE SYMBOL='%s' and ATOMIC_WEIGHT=%d''' %(p, at_wt)).fetchall()[0][0])
 
         decay_str = 'Further reaction: Decay of %s-%d' %(p,v2)
+
+        if vizObj!=None:
+            decay_steps = [[cur_r], [at_num], [int(at_wt)]]
+
         while status=='NO':
             cur_step, cur_p = None, None
 
@@ -341,6 +424,7 @@ class nuclear:
             # 2. Check if reaction exists
             if alpha == None and beta == None:
                 decay_str += '\nFurther reaction not recorded'
+                vizObj = None
                 break
 
             # 3. If any one step makes it stable, select that
@@ -367,6 +451,14 @@ class nuclear:
                 cur_p, status = beta[0], beta[4]
                 at_num += 1
             prev_step, cur_r = cur_step, cur_p
+
+            if vizObj!=None:
+                decay_steps[0].append(cur_p)
+                decay_steps[1].append(at_num)
+                decay_steps[2].append(int(at_wt))
+
+        if vizObj!=None:
+            vizObj.draw_decay_series(decay_steps, name)
         return decay_str
 
 

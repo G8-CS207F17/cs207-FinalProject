@@ -43,4 +43,4 @@
 from chemkin import *
 
 n = nuclear('tests/rxns_nuclear.xml')
-n.print_reaction()
+n.print_reaction(verbose=False)

@@ -5,18 +5,18 @@ import numpy as np
 def parseXML(file):
     """
     Parses the XML file containing reactions information. Returns reaction coefficients and reaction rates.
-    
+
     INPUTS
     ========
     file: string, required
           path of the XML file
-          
+
     RETURNS
     ========
     species_lst: list of species to fix order
     reactions_dict: dictionary containing all relevant information for calculating reaction rates
     """
-    
+
     tree = ET.parse(file)
     root = tree.getroot()
 
@@ -64,7 +64,7 @@ def parseXML(file):
             except:
                 raise ValueError('Missing coefficients. Please check your XML file.')
             reactions_dict['rates'].append(new_dict)
-            
+
         if coeffs.find('modifiedArrhenius'):
             new_dict = {}
             new_dict['type'] = 'modifiedArrhenius'
@@ -91,18 +91,18 @@ def parseXML(file):
 def parseNuclearXML(file):
     """
     Parses the XML file containing reactions information. Returns reaction coefficients and reaction rates.
-    
+
     INPUTS
     ========
     file: string, required
           path of the XML file
-          
+
     RETURNS
     ========
     species_lst: list of species to fix order
     reactions_dict: dictionary containing all relevant information for calculating reaction rates
     """
-    
+
     tree = ET.parse(file)
     root = tree.getroot()
 
@@ -125,7 +125,7 @@ def parseNuclearXML(file):
             key, value = product.split(':')
             new_dict['products'].append(key)
             new_dict['p_mass'].append(float(value))
-        
+
         # Parse reaction coefficients
         coeffs = child.find('rateCoeff')
         if coeffs.find('Nuclear'):

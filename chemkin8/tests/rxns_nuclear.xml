@@ -13,7 +13,7 @@
             <equation>Ra =] Rn</equation>
             <rateCoeff>
                 <Nuclear>
-                    <halfLife>3.52e+10</halfLife>
+                    <halfLife>8.4096e+8</halfLife>
                 </Nuclear>
             </rateCoeff>
             <reactants>Ra:226</reactants>
@@ -25,7 +25,7 @@
             <equation>C =] N</equation>
             <rateCoeff>
                 <Nuclear>
-                  <halfLife>3.52e+10</halfLife>
+                  <halfLife>2.99592e-9</halfLife>
                 </Nuclear>
             </rateCoeff>
             <reactants>C:14</reactants>
@@ -37,7 +37,7 @@
             <equation>C =] B</equation>
             <rateCoeff>
                 <Nuclear>
-                  <halfLife>3.52e+10</halfLife>
+                  <halfLife>20.33</halfLife>
                 </Nuclear>
             </rateCoeff>
             <reactants>C:11</reactants>
@@ -49,7 +49,7 @@
             <equation>Fe =] Mn</equation>
             <rateCoeff>
                 <Nuclear>
-                  <halfLife>3.52e+10</halfLife>
+                  <halfLife>1.4385672e+6</halfLife>
                 </Nuclear>
             </rateCoeff>
             <reactants>Fe:55</reactants>
@@ -61,7 +61,7 @@
             <equation>Th* =] Th</equation>
             <rateCoeff>
                 <Nuclear>
-                  <halfLife>3.52e+10</halfLife>
+                  <halfLife>3.4704e+4</halfLife>
                 </Nuclear>
             </rateCoeff>
             <reactants>Th*:234</reactants>
@@ -73,7 +73,7 @@
             <equation>Cf =] Pd + Te</equation>
             <rateCoeff>
                 <Nuclear>
-                  <halfLife>3.52e+10</halfLife>
+                  <halfLife>8.712e+4</halfLife>
                 </Nuclear>
             </rateCoeff>
             <reactants>Cf:254</reactants>
@@ -85,7 +85,7 @@
             <equation>U =] Th</equation>
             <rateCoeff>
                 <Nuclear>
-                  <halfLife>3.52e+10</halfLife>
+                  <halfLife>2.3483808e+15</halfLife>
                 </Nuclear>
             </rateCoeff>
             <reactants>U:238</reactants>
@@ -97,7 +97,7 @@
             <equation>U =] Th</equation>
             <rateCoeff>
                 <Nuclear>
-                  <halfLife>3.52e+10</halfLife>
+                  <halfLife>3.6991728e+15</halfLife>
                 </Nuclear>
             </rateCoeff>
             <reactants>U:235</reactants>
@@ -109,7 +109,7 @@
             <equation>Th =] Ra</equation>
             <rateCoeff>
                 <Nuclear>
-                  <halfLife>3.52e+10</halfLife>
+                  <halfLife>7.38468e+15</halfLife>
                 </Nuclear>
             </rateCoeff>
             <reactants>Th:232</reactants>
@@ -121,7 +121,7 @@
             <equation>Np =] Pa</equation>
             <rateCoeff>
                 <Nuclear>
-                  <halfLife>3.52e+10</halfLife>
+                  <halfLife>1.124784e+12</halfLife>
                 </Nuclear>
             </rateCoeff>
             <reactants>Np:237</reactants>
