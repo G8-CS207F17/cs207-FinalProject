@@ -149,11 +149,38 @@ class backward:
 
 
 class visualisations:
+    """Methods for visualising nuclear reactions.
+
+    draw_decay_graph: Generates plot for the decay of reactant
+                      in a nuclear reaction.
+    draw_decay_series:  Generates plot for the multi-step decay
+                        of a radioactive element into a stable
+                        isotope.
+    """
+
     def __init__(self, path):
         self.dir_path = path
 
     def draw_decay_graph(self, halfLife, ele):
-        # Half life is accepted in minutes
+        """Generates plot for the decay of reactant in a nuclear reaction.
+
+        INPUTS
+        =======
+        halfLife: float, time (in minutes) taken for reactant to reduce to
+                  half its concentration.
+        ele: string, name of the decaying isotope of the reactant.
+
+        RETURNS
+        =======
+        The plot is saved in the outputs directory of the package, marked
+        by the date and time of processing.
+
+        EXAMPLES
+        ========
+        >>> v = visualisations('outputs/2017-12-03T19/26/51.908136/')
+        >>> v.draw_decay_graph(2.99592e-9, 'C-14')
+        """
+
         k = np.log(2)/halfLife
         ts = np.linspace(0,10*halfLife,1001)
         As = [np.exp(-k*t) for t in ts]
@@ -166,9 +193,33 @@ class visualisations:
         plt.xlim(0,10*halfLife)
         plt.ylim(0,1)
         plt.savefig(self.dir_path+ele+'.png')
-        return None
+        return
+
 
     def draw_decay_series(self, steps, name):
+        """Generates plot for the multi-step decay of a radioactive element
+        into a stable isotope.
+
+        INPUTS
+        =======
+        steps: array of 3 lists
+               First list contains names of products at each step.
+               Second list contains atomic number of products at each step.
+               Third list contains atomic number of products at each step.
+        name: string, name of the decaying radioactive isotope.
+
+        RETURNS
+        =======
+        The plot is saved in the outputs directory of the package, marked
+        by the date and time of processing.
+
+        EXAMPLES
+        ========
+        >>> v = visualisations('outputs/2017-12-03T19/26/51.908136/')
+        >>> steps = [['Rn', 'Po', 'Pb', 'Bi', 'Po', 'Pb', 'Bi', 'Po', 'Pb'], [86, 84, 82, 83, 84, 82, 83, 84, 82], [222, 218, 214, 214, 214, 210, 210, 210, 206]]
+        >>> v.draw_decay_series(steps, 'Rn-222')
+        """
+
         ele, Zs, As = steps[0], steps[1], steps[2]
 
         plt.scatter(Zs, As, color='k')
@@ -211,13 +262,14 @@ class visualisations:
 class nuclear:
     """Methods for completing nuclear reactions
 
-    check_stable: Checks if reaction products are stable or
-                  decay further
-    print_reaction:  Prints complete reaction with its type
-    find_reaction_type: Detects the reaction type and prints
-                        the complete reaction
-    generate_decay_series:  Generates the decay sequence for
-                            an unstable radioactive product
+    parse: Parses file containing nuclear reactions and stores it in internal
+           array.
+    print_reaction:  Prints complete set of reaction(s) to file and on console.
+    check_stable: Checks if reaction products are stable or decay further
+    reaction_string: Generates complete individual reactions.
+    find_reaction_type: Detects the type of reaction occuring out of 6 kinds
+    generate_decay_series:  Generates the decay sequence for an unstable
+                            radioactive product
     """
 
     def __init__(self, file):
@@ -225,24 +277,64 @@ class nuclear:
         self.file = os.path.dirname(os.path.realpath(__file__))
         self.parse(file)
 
-    def parse(self, file):
-        self.reactions = parseNuclearXML(file)
 
-    def print_reaction(self, verbose = True, visualise = True):
-        """Checks if reaction initialized is atble or decays further
+    def parse(self, file):
+        """Parses file containing nuclear reactions and stores it in internal
+        array.
+
+        INPUTS
+        =======
+        file: string, name of xml file containing data about nuclear reactions.
 
         EXAMPLES
         ========
-        >>> n = nuclear(['U'], ['Th'], [238], [234])
-        >>> n.check_stable()
+        >>> n = nuclear('tests/rxns_nuclear.xml')
+        >>> n.parse('tests/rxns_nuclear.xml')
         """
+
+        self.reactions = parseNuclearXML(file)
+
+
+    def print_reaction(self, verbose = True, visualise = True):
+        """Prints complete set of reaction(s) to file and on console.
+
+        INPUTS
+        =======
+        verbose: boolean value, specifies if reaction details should be printed
+                 as console output or not.
+        visualise: boolean value, specifies if reactant decay plots should be
+                   generated or not.
+
+
+        EXAMPLES
+        ========
+        >>> n = nuclear('tests/rxns_nuclear.xml')
+        >>> n.print_reaction(verbose=False)
+
+        ================= Reaction 1 =================
+        Alpha Decay: Ra(88, 226) --> Rn(86, 222)
+        	Products not stable. Further reactions initiated.
+        Further reaction: Decay of Rn-222
+        	Alpha Decay: Rn(86, 222) --> Po(84, 218)
+        	Alpha Decay: Po(84, 218) --> Pb(82, 214)
+        	Beta Decay: Pb(82, 214) --> Bi(83, 214)
+        	Beta Decay: Bi(83, 214) --> Po(84, 214)
+        	Alpha Decay: Po(84, 214) --> Pb(82, 210)
+        	Beta Decay: Pb(82, 210) --> Bi(83, 210)
+        	Beta Decay: Bi(83, 210) --> Po(84, 210)
+        	Alpha Decay: Po(84, 210) --> Pb(82, 206)
+
+        ================= Reaction 2 =================
+        Beta Decay: C(6, 14) --> N(7, 14)
+        Products stable. No further reactions.
+        """
+
         db, self.cursor = None, None
         try:
             db = sqlite3.connect(self.file + '/nucleardb.sqlite')
             self.cursor = db.cursor()
         except:
             raise ValueError('Database not connected!')
-
 
         now = datetime.datetime.now()
         dir_path = "outputs/"+now.isoformat()+"/"
@@ -282,12 +374,11 @@ class nuclear:
         reac_output.write(reac_str)
         reac_output.close()
 
-
-        return None
+        return
 
 
     def reaction_string(self, r, p, n1, n2, v1, v2, reac_type):  # n1, n2 are atomic numbers
-        """Prints the complete reaction
+        """Generates complete individual reactions.
 
         INPUTS
         =======
@@ -299,12 +390,15 @@ class nuclear:
         v2: array of float, atomic weight of each product
         reac_type: array of string, nature of each nuclear reaction
 
+        RETURNS
+        =======
+        reac_str: string, complete reaction with reaction type
 
         EXAMPLES
         ========
         >>> n = nuclear(['U'], ['Th'], [238], [234])
-        >>> n.print_reaction(['U'], ['Th', 'alpha'], [92], [90, 2], [238], [234, 4], 'Alpha Decay')()
-        Alpha Decay: U(92, 238) --> Th(90, 234) + alpha(2, 4)
+        >>> n.reaction_string(['U'], ['Th', 'alpha'], [92], [90, 2], [238], [234, 4], 'Alpha Decay')()
+        Alpha Decay: U(92, 238) --> Th(90, 234)
         """
 
         reac_str = "%s: %s(%s, %d)" %(reac_type, r[0], n1[0], v1[0])
@@ -321,9 +415,29 @@ class nuclear:
 
 
     def find_reaction_type(self, reaction):
-        # Can be used for intermediate reaction in series also
-        # Find type of nuclear reaction (stability check not required)
-        # Print complete nuclear reaction
+        """Detects the type of reaction occuring out of 6 kinds
+            a. Alpha Decay
+            b. Beta Decay
+            c. Positron Emission
+            d. Electron Capture
+            e. Gamma Emission
+            f. Spontaneous Fission
+
+        INPUTS
+        =======
+        reaction: dictionary of values, containing details of a reactions
+
+        RETURNS
+        =======
+        reac_str: Returns string form of given reaction
+
+        EXAMPLES
+        ========
+        >>> n = nuclear('tests/rxns_nuclear.xml')
+        >>> reaction = {'id': 'reaction01', 'reactants': ['Ra'], 'r_mass': [226.0], 'products': ['Rn'], 'p_mass': [222.0], 'halfLife': 840960000.0}
+        >>> n.find_reaction_type(reaction)
+        Alpha Decay: Ra(88, 226) --> Rn(86, 222)
+        """
 
         z1, z2 = [], []
         for r in reaction['reactants']:
@@ -367,6 +481,9 @@ class nuclear:
         =======
         p: single string, symbol of radioactive element
         v2: single float value, atomic weight of radioactive element
+        vizObj = object of visualisations class, if not None then plot of
+                 radioactive decay should be generated
+        name = string, name of radioactive isotope that is decaying further
 
         EXAMPLES
         ========
