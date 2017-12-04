@@ -118,6 +118,119 @@ If tag <reaction reversible="yes"...> : calculations will be for reversible reac
 If tag <reaction reversible="no"...>: calculations will be for non-reversible reactions.
 ```
 
+New features
+-------------
+Let us have a set of nuclear reactions:
+```
+Ra-226 => Rn-222
+C-14 => N-14
+U-238 => Th-234
+```
+
+We can add information about these reactions in an xml file of the form:
+```
+<?xml version="1.0"?>
+
+<ctml>
+
+    <phase>
+        <speciesArray> Ra Rn C N B Fe Mn Th Pd Te U Pb Np Bi Th* Cf Pa</speciesArray>
+    </phase>
+
+    <reactionData id="nuclear_reactions">
+
+        <!-- reaction 01  -->
+        <reaction reversible="no" type="Elementary" id="reaction01">
+            <equation>Ra =] Rn</equation>
+            <rateCoeff>
+                <Nuclear>
+                    <halfLife>8.4096e+8</halfLife>
+                </Nuclear>
+            </rateCoeff>
+            <reactants>Ra:226</reactants>
+            <products>Rn:222</products>
+        </reaction>
+
+        <!-- reaction 02 -->
+        <reaction reversible="no" type="Elementary" id="reaction02">
+            <equation>C =] N</equation>
+            <rateCoeff>
+                <Nuclear>
+                  <halfLife>2.99592e-9</halfLife>
+                </Nuclear>
+            </rateCoeff>
+            <reactants>C:14</reactants>
+            <products>N:14</products>
+        </reaction>
+
+        <!-- reaction 03 -->
+        <reaction reversible="no" type="Elementary" id="reaction07">
+            <equation>U =] Th</equation>
+            <rateCoeff>
+                <Nuclear>
+                  <halfLife>2.3483808e+15</halfLife>
+                </Nuclear>
+            </rateCoeff>
+            <reactants>U:238</reactants>
+            <products>Th:234</products>
+        </reaction>
+
+    </reactionData>
+
+</ctml>
+```
+
+We can initialise the `nuclear` class and parse the XML file by passing in the path to the XML file:
+```
+n = nuclear('path-to-xml')
+```
+
+We can print the complete reactions and generate plots for radioactive decays by calling the `print_reaction` function.
+```
+n.print_reaction(verbose=True, visualise=True)
+```
+
+The result is stored in `outputs/cur-date-and-time/reac_output.txt` and is displayed on the console as:
+```
+================= Reaction 1 =================
+Alpha Decay: Ra(88, 226) --> Rn(86, 222)
+	Products not stable. Further reactions initiated.
+Further reaction: Decay of Rn-222
+	Alpha Decay: Rn(86, 222) --> Po(84, 218)
+	Alpha Decay: Po(84, 218) --> Pb(82, 214)
+	Beta Decay: Pb(82, 214) --> Bi(83, 214)
+	Beta Decay: Bi(83, 214) --> Po(84, 214)
+	Alpha Decay: Po(84, 214) --> Pb(82, 210)
+	Beta Decay: Pb(82, 210) --> Bi(83, 210)
+	Beta Decay: Bi(83, 210) --> Po(84, 210)
+	Alpha Decay: Po(84, 210) --> Pb(82, 206)
+
+================= Reaction 2 =================
+Beta Decay: C(6, 14) --> N(7, 14)
+Products stable. No further reactions.
+
+================= Reaction 3 =================
+Alpha Decay: U(92, 238) --> Th(90, 234)
+	Products not stable. Further reactions initiated.
+Further reaction: Decay of Th-234
+	Beta Decay: Th(90, 234) --> Pa(91, 234)
+	Beta Decay: Pa(91, 234) --> U(92, 234)
+	Alpha Decay: U(92, 234) --> Th(90, 230)
+	Alpha Decay: Th(90, 230) --> Ra(88, 226)
+	Alpha Decay: Ra(88, 226) --> Rn(86, 222)
+	Alpha Decay: Rn(86, 222) --> Po(84, 218)
+	Alpha Decay: Po(84, 218) --> Pb(82, 214)
+	Beta Decay: Pb(82, 214) --> Bi(83, 214)
+	Beta Decay: Bi(83, 214) --> Po(84, 214)
+	Alpha Decay: Po(84, 214) --> Pb(82, 210)
+	Beta Decay: Pb(82, 210) --> Bi(83, 210)
+	Beta Decay: Bi(83, 210) --> Po(84, 210)
+	Alpha Decay: Po(84, 210) --> Pb(82, 206)
+```
+
+The plots for decay of each reactant in the list of reactions is also stored in the same directory, marked by the isotope name.
+
+
 Future Features
 ---------------
 **Motivation:**
