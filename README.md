@@ -13,8 +13,10 @@ Our package can also handle an arbitrary number of species and reactions. It is 
 Our package also supports nuclear reactions. For a given nuclear reaction xml, generates the decay series until a stable product is formed as well as half-life graphs for the species.
 
 
+
 Installation
 ------------
+
 Install the package by running `pip install chemkin8` in terminal.
 
 To run the test suite, either navigate to the folder where this package is installed or download this repo and navigate to the root folder, then run `pytest` in terminal.
@@ -172,15 +174,30 @@ The aim of including these features is to expand the types of reactions that our
 
 
 
+
 ## New Feature - Nuclear Reactions
 
 **Motivation**
 
-Our new feature expands the functionality of the `chemkin` library, depicting how it handles additional types of reactions. Based on the list of reactions provided, the `nuclear` class detects the type of reaction  and prints the complete reaction. It handles both one-step and multi-step reactions and generates the decay series until a stable product is formed. The `visualisations` class generates decay graphs for all nuclear reactions. This class can be extended to other types of reactions as well.
+Our new feature expands the functionality of the `chemkin` library, depicting how it handles additional types of reactions. Based on the list of reactions provided, the `nuclear` class detects the type of reaction  and prints the complete reaction. It handles both one-step and multi-step reactions and generates the decay series until a stable product is formed. The `visualisations` class generates decay graphs for all nuclear reactions. This class may be extended to other types of reactions as well.
 
 
 
 **Implementation**
+
+The implementation consists of 2 new classes - `nuclear` and `visulaisations`. The `nuclear` class contains functions including
+
+* `print_reaction` which determines if the reaction product is stable or not and hence, if the products will decay further
+* `find_reaction_type` which determines the type of individual reaction - alpha decay, beta decay, positron emission, electron capture, gamma decay or spontaneous fission.
+* `generate_decay_series` which generates the decay reactions until a stable product is formed.
+
+The visualisations class contains functions including
+
+* `draw_decay_graph` which draws the decay graph for reactants
+
+* `draw_decay_series` which generates a plot of radioactive reactants until a stable product is formed.
+
+  ​
 
 Let us have a set of nuclear reactions:
 
@@ -247,7 +264,8 @@ We can add information about these reactions in an xml file of the form:
 We can initialise the `nuclear` class and parse the XML file by passing in the path to the XML file:
 
 ```
-n = nuclear('path-to-xml')
+from chemkin8 import chemkin
+n = chemkin.nuclear('path-to-xml')
 ```
 
 We can print the complete reactions and generate plots for radioactive decays by calling the `print_reaction` function.
@@ -296,6 +314,5 @@ Further reaction: Decay of Th-234
 ```
 
 The plots for decay of each reactant in the list of reactions is also stored in the same directory, marked by the isotope name.
-
 
 
