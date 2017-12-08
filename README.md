@@ -10,7 +10,7 @@ Our package computes the progress rates of of a system chemical reactions. The p
 
 Our package can also handle an arbitrary number of species and reactions. It is compatible with elementary and irreversible reactions, and can be easily extended to reversible or non-elementary reactions.
 
-
+Our package also supports nuclear reactions. For a given nuclear reaction xml, generates the decay series until a stable product is formed as well as half-life graphs for the species.
 
 
 Installation
