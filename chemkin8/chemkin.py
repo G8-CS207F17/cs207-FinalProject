@@ -4,6 +4,10 @@ import os
 from chemkin8.parser import *
 from parser import * # to be deleted
 import datetime
+import matplotlib as mpl
+if os.environ.get('DISPLAY','') == '':
+    print('no display found. Using non-interactive Agg backend')
+    mpl.use('Agg')
 import matplotlib.pyplot as plt
 
 
@@ -293,8 +297,8 @@ class nuclear:
         >>> test_data_dir = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'tests/')
         >>> fname = os.path.join(test_data_dir, 'rxns_nuclear.xml')
         >>> n = nuclear(fname)
-        >>> n.reactions[0]
-        {'id': 'reaction01', 'reactants': ['Ra'], 'r_mass': [226.0], 'products': ['Rn'], 'p_mass': [222.0], 'halfLife': 840960000.0}
+        >>> n.reactions[0]['products']
+        ['Rn']
         """
         self.reactions = parseNuclearXML(file)
 
