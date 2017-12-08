@@ -6,6 +6,7 @@ import numpy as np
 test_data_dir = os.path.join(os.path.dirname(chemkin8.__file__), 'tests/')
 fname = os.path.join(test_data_dir, 'rxns.xml')
 fname_r = os.path.join(test_data_dir, 'rxns_reversible.xml')
+fname_n = os.path.join(test_data_dir, 'rxns_nuclear.xml')
 
 
 def test_k_const():
@@ -195,8 +196,20 @@ def test_repr():
     c = chemkin.chemkin(fname)
     assert(repr(c) == 'chemkin()')
 
-'''
-def test_nuclear():
-    1. Test against known reaction steps
-    2. Check against known half-life values
-'''
+def test_nuclear_db1():
+    n = chemkin.nuclear(fname_n)
+    n.file = ''
+    try:
+        n.print_reaction()
+    except ValueError as err:
+        assert(type(err) == ValueError)
+
+def test_nuclear_db2():
+    n = chemkin.nuclear(fname_n)
+    reaction = {'id': 'reaction01', 'reactants': ['Ra'], 'r_mass': [226.0], 'products': ['Rn'], 'p_mass': [222.0], 'halfLife': 840960000.0}
+    assert(n.find_reaction_type(reaction) == 'Alpha Decay: Ra(nan, 226) --> Rn(nan, 222)')
+
+def test_nuclear_silent():
+    n = chemkin.nuclear(fname_n)
+    assert(n.print_reaction(verbose=False) == None)
+    

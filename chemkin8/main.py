@@ -40,7 +40,7 @@
 # n.generate_decay_series('Np', 237)
 
 
-from chemkin import *
+# from chemkin import *
 
-n = nuclear('tests/rxns_nuclear.xml')
-n.print_reaction(verbose=False)
+# n = nuclear('tests/rxns_nuclear.xml')
+# n.print_reaction(verbose=False)

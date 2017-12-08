@@ -177,7 +177,8 @@ class visualisations:
 
         EXAMPLES
         ========
-        >>> v = visualisations('outputs/2017-12-03T19/26/51.908136/')
+        >>> output_dir = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'tests/')
+        >>> v = visualisations(output_dir)
         >>> v.draw_decay_graph(2.99592e-9, 'C-14')
         """
 
@@ -215,7 +216,8 @@ class visualisations:
 
         EXAMPLES
         ========
-        >>> v = visualisations('outputs/2017-12-03T19/26/51.908136/')
+        >>> output_dir = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'tests/')
+        >>> v = visualisations(output_dir)
         >>> steps = [['Rn', 'Po', 'Pb', 'Bi', 'Po', 'Pb', 'Bi', 'Po', 'Pb'], [86, 84, 82, 83, 84, 82, 83, 84, 82], [222, 218, 214, 214, 214, 210, 210, 210, 206]]
         >>> v.draw_decay_series(steps, 'Rn-222')
         """
@@ -253,7 +255,7 @@ class visualisations:
         plt.legend()
 
         plt.tight_layout()
-        plt.savefig(self.dir_path+name+'.png')
+        plt.savefig(self.dir_path + name + '.png')
         plt.gcf().clear()
         return None
 
@@ -288,10 +290,12 @@ class nuclear:
 
         EXAMPLES
         ========
-        >>> n = nuclear('tests/rxns_nuclear.xml')
-        >>> n.parse('tests/rxns_nuclear.xml')
+        >>> test_data_dir = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'tests/')
+        >>> fname = os.path.join(test_data_dir, 'rxns_nuclear.xml')
+        >>> n = nuclear(fname)
+        >>> n.reactions[0]
+        {'id': 'reaction01', 'reactants': ['Ra'], 'r_mass': [226.0], 'products': ['Rn'], 'p_mass': [222.0], 'halfLife': 840960000.0}
         """
-
         self.reactions = parseNuclearXML(file)
 
 
@@ -308,25 +312,11 @@ class nuclear:
 
         EXAMPLES
         ========
-        >>> n = nuclear('tests/rxns_nuclear.xml')
-        >>> n.print_reaction(verbose=False)
-
-        ================= Reaction 1 =================
-        Alpha Decay: Ra(88, 226) --> Rn(86, 222)
-        	Products not stable. Further reactions initiated.
-        Further reaction: Decay of Rn-222
-        	Alpha Decay: Rn(86, 222) --> Po(84, 218)
-        	Alpha Decay: Po(84, 218) --> Pb(82, 214)
-        	Beta Decay: Pb(82, 214) --> Bi(83, 214)
-        	Beta Decay: Bi(83, 214) --> Po(84, 214)
-        	Alpha Decay: Po(84, 214) --> Pb(82, 210)
-        	Beta Decay: Pb(82, 210) --> Bi(83, 210)
-        	Beta Decay: Bi(83, 210) --> Po(84, 210)
-        	Alpha Decay: Po(84, 210) --> Pb(82, 206)
-
-        ================= Reaction 2 =================
-        Beta Decay: C(6, 14) --> N(7, 14)
-        Products stable. No further reactions.
+        >>> test_data_dir = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'tests/')
+        >>> fname = os.path.join(test_data_dir, 'rxns_nuclear.xml')
+        >>> n = nuclear(fname)
+        >>> n.print_reaction(verbose=True).split('\\n')[:2]
+        ['================= Reaction 1 =================', 'Alpha Decay: Ra(88, 226) --> Rn(86, 222)']
         """
 
         db, self.cursor = None, None
@@ -366,15 +356,14 @@ class nuclear:
                         name = reaction['reactants'][0]+'-'+str(int(reaction['r_mass'][0]))
                         v.draw_decay_graph(reaction['halfLife'], name)
 
-
-        if verbose:
-            print(reac_str)
-
         reac_output = open(file_path, "w")
         reac_output.write(reac_str)
         reac_output.close()
 
-        return
+        if verbose:
+            return reac_str
+        else:
+            return
 
 
     def reaction_string(self, r, p, n1, n2, v1, v2, reac_type):  # n1, n2 are atomic numbers
@@ -396,9 +385,11 @@ class nuclear:
 
         EXAMPLES
         ========
-        >>> n = nuclear(['U'], ['Th'], [238], [234])
-        >>> n.reaction_string(['U'], ['Th', 'alpha'], [92], [90, 2], [238], [234, 4], 'Alpha Decay')()
-        Alpha Decay: U(92, 238) --> Th(90, 234)
+        >>> test_data_dir = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'tests/')
+        >>> fname = os.path.join(test_data_dir, 'rxns_nuclear.xml')
+        >>> n = nuclear(fname)
+        >>> n.reaction_string(['U'], ['Th', 'alpha'], [92], [90, 2], [238], [234, 4], 'Alpha Decay')
+        'Alpha Decay: U(92, 238) --> Th(90, 234) + alpha(90, 234)'
         """
 
         reac_str = "%s: %s(%s, %d)" %(reac_type, r[0], n1[0], v1[0])
@@ -433,21 +424,25 @@ class nuclear:
 
         EXAMPLES
         ========
-        >>> n = nuclear('tests/rxns_nuclear.xml')
+        >>> test_data_dir = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'tests/')
+        >>> fname = os.path.join(test_data_dir, 'rxns_nuclear.xml')
+        >>> n = nuclear(fname)
+        >>> db = sqlite3.connect(n.file + '/nucleardb.sqlite')
+        >>> n.cursor = db.cursor()
         >>> reaction = {'id': 'reaction01', 'reactants': ['Ra'], 'r_mass': [226.0], 'products': ['Rn'], 'p_mass': [222.0], 'halfLife': 840960000.0}
         >>> n.find_reaction_type(reaction)
-        Alpha Decay: Ra(88, 226) --> Rn(86, 222)
+        'Alpha Decay: Ra(88, 226) --> Rn(86, 222)'
         """
 
         z1, z2 = [], []
         for r in reaction['reactants']:
             try:
-                z1.append(self.cursor.execute('''SELECT ATOMIC_NUMBER FROM ELEMENT_PROPERTIES WHERE SYMBOL = "%s"'''%r).fetchall()[0][0])
+                z1.append(self.cursor.execute('''SELECT ATOMIC_NUMBER FROM ELEMENT_PROPERTIES WHERE SYMBOL = "%s"'''%r.strip('*')).fetchall()[0][0])
             except:
                 z1.append('nan')
         for p in reaction['products']:
             try:
-                z2.append(self.cursor.execute('''SELECT ATOMIC_NUMBER FROM ELEMENT_PROPERTIES WHERE SYMBOL = "%s"'''%p).fetchall()[0][0])
+                z2.append(self.cursor.execute('''SELECT ATOMIC_NUMBER FROM ELEMENT_PROPERTIES WHERE SYMBOL = "%s"'''%p.strip('*')).fetchall()[0][0])
             except:
                 z2.append('nan')
 
@@ -474,7 +469,7 @@ class nuclear:
         return reac_str
 
 
-    def generate_decay_series(self, p=None, v2=None, vizObj = None, name=None):
+    def generate_decay_series(self, p = None, v2 = None, vizObj = None, name = None):
         """Prints radiactive decay series of element
 
         INPUTS
@@ -487,32 +482,21 @@ class nuclear:
 
         EXAMPLES
         ========
-        >>> n = nuclear(['U'], ['Th'], [238], [234])
-        >>> n.generate_decay_series()
-        Decay of U-238
-        Alpha Decay: U(92, 238) --> Th(90, 234)
-        Beta Decay: Th(90, 234) --> Pa(91, 234)
-        Beta Decay: Pa(91, 234) --> U(92, 234)
-        Alpha Decay: U(92, 234) --> Th(90, 230)
-        Alpha Decay: Th(90, 230) --> Ra(88, 226)
-        Alpha Decay: Ra(88, 226) --> Rn(86, 222)
-        Alpha Decay: Rn(86, 222) --> Po(84, 218)
-        Alpha Decay: Po(84, 218) --> Pb(82, 214)
-        Beta Decay: Pb(82, 214) --> Bi(83, 214)
-        Beta Decay: Bi(83, 214) --> Po(84, 214)
-        Alpha Decay: Po(84, 214) --> Pb(82, 210)
-        Beta Decay: Pb(82, 210) --> Bi(83, 210)
-        Beta Decay: Bi(83, 210) --> Po(84, 210)
-        Alpha Decay: Po(84, 210) --> Pb(82, 206)
-
+        >>> test_data_dir = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'tests/')
+        >>> fname = os.path.join(test_data_dir, 'rxns_nuclear.xml')
+        >>> n = nuclear(fname)
+        >>> n.generate_decay_series(n.reactions[1]['products'][0], n.reactions[1]['p_mass'][0])
+        'Further reaction: Decay of N-14\\nFurther reaction not recorded'
         """
         # Connect to DB
         db = sqlite3.connect(self.file + '/nucleardb.sqlite')
         cursor = db.cursor()
 
         # Print series of reactions
-        if p==None: p = self.p[0]
-        if v2==None: v2=self.v2[0]
+        if name == None: name = self.reactions[0]['reactants'][0]+'-'+str(int(self.reactions[0]['r_mass'][0]))
+        if p == None: p = self.reactions[0]['products'][0]
+        if v2 == None: v2 = self.reactions[0]['p_mass'][0]
+
 
         prev_step, status = 'alpha', 'NO'
         cur_r, at_wt = p, v2
@@ -520,10 +504,10 @@ class nuclear:
 
         decay_str = 'Further reaction: Decay of %s-%d' %(p,v2)
 
-        if vizObj!=None:
+        if vizObj != None:
             decay_steps = [[cur_r], [at_num], [int(at_wt)]]
 
-        while status=='NO':
+        while status == 'NO':
             cur_step, cur_p = None, None
 
             # 1. Find alpha and beta decay products
@@ -667,6 +651,25 @@ class chemkin:
             self.nasa = feed
 
     def NASAcoeffs(self):
+        """Returns NASA coeffs
+
+        INPUTS
+        =======
+        None
+
+        RETURNS
+        =======
+        self.nasa: numpy array, nasa coefficients
+
+        EXAMPLES
+        =======
+        >>> test_data_dir = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'tests/')
+        >>> fname = os.path.join(test_data_dir, 'rxns.xml')
+        >>> c = chemkin(fname)
+        >>> c.parseNASA(1500)
+        >>> c.NASAcoeffs()
+        [(2.50000001, -2.30842973e-11, 1.61561948e-14, -4.73515235e-18, 4.98197357e-22, 25473.6599, -0.446682914), (2.56942078, -8.59741137e-05, 4.19484589e-08, -1.00177799e-11, 1.22833691e-15, 29217.5791, 4.78433864), (3.09288767, 0.000548429716, 1.26505228e-07, -8.79461556e-11, 1.17412376e-14, 3858.657, 4.4766961), (3.3372792, -4.94024731e-05, 4.99456778e-07, -1.79566394e-10, 2.00255376e-14, -950.158922, -3.20502331), (3.03399249, 0.00217691804, -1.64072518e-07, -9.7041987e-11, 1.68200992e-14, -30004.2971, 4.9667701), (3.28253784, 0.00148308754, -7.57966669e-07, 2.09470555e-10, -2.16717794e-14, -1088.45772, 5.45323129)]
+        """
         return self.nasa
 
     def k_constant(self, k):

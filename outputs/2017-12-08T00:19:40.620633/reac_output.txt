@@ -1,0 +1,109 @@
+================= Reaction 1 =================
+Alpha Decay: Ra(88, 226) --> Rn(86, 222)
+	Products not stable. Further reactions initiated.
+Further reaction: Decay of Rn-222
+	Alpha Decay: Rn(86, 222) --> Po(84, 218)
+	Alpha Decay: Po(84, 218) --> Pb(82, 214)
+	Beta Decay: Pb(82, 214) --> Bi(83, 214)
+	Beta Decay: Bi(83, 214) --> Po(84, 214)
+	Alpha Decay: Po(84, 214) --> Pb(82, 210)
+	Beta Decay: Pb(82, 210) --> Bi(83, 210)
+	Beta Decay: Bi(83, 210) --> Po(84, 210)
+	Alpha Decay: Po(84, 210) --> Pb(82, 206)
+
+================= Reaction 2 =================
+Beta Decay: C(6, 14) --> N(7, 14)
+Products stable. No further reactions.
+
+================= Reaction 3 =================
+Positron Emission: C(6, 11) --> B(5, 11)
+Products stable. No further reactions.
+
+================= Reaction 4 =================
+Positron Emission: Fe(26, 55) --> Mn(25, 55)
+Products stable. No further reactions.
+
+================= Reaction 5 =================
+Gamma Emission: Th*(nan, 234) --> Th(90, 234)
+	Products not stable. Further reactions initiated.
+Further reaction: Decay of Th-234
+	Beta Decay: Th(90, 234) --> Pa(91, 234)
+	Beta Decay: Pa(91, 234) --> U(92, 234)
+	Alpha Decay: U(92, 234) --> Th(90, 230)
+	Alpha Decay: Th(90, 230) --> Ra(88, 226)
+	Alpha Decay: Ra(88, 226) --> Rn(86, 222)
+	Alpha Decay: Rn(86, 222) --> Po(84, 218)
+	Alpha Decay: Po(84, 218) --> Pb(82, 214)
+	Beta Decay: Pb(82, 214) --> Bi(83, 214)
+	Beta Decay: Bi(83, 214) --> Po(84, 214)
+	Alpha Decay: Po(84, 214) --> Pb(82, 210)
+	Beta Decay: Pb(82, 210) --> Bi(83, 210)
+	Beta Decay: Bi(83, 210) --> Po(84, 210)
+	Alpha Decay: Po(84, 210) --> Pb(82, 206)
+
+================= Reaction 6 =================
+Spontaneous Fission: Cf(98, 254) --> Pd(46, 118) + Te(46, 118)
+Products stable. No further reactions.
+Products stable. No further reactions.
+
+================= Reaction 7 =================
+Alpha Decay: U(92, 238) --> Th(90, 234)
+	Products not stable. Further reactions initiated.
+Further reaction: Decay of Th-234
+	Beta Decay: Th(90, 234) --> Pa(91, 234)
+	Beta Decay: Pa(91, 234) --> U(92, 234)
+	Alpha Decay: U(92, 234) --> Th(90, 230)
+	Alpha Decay: Th(90, 230) --> Ra(88, 226)
+	Alpha Decay: Ra(88, 226) --> Rn(86, 222)
+	Alpha Decay: Rn(86, 222) --> Po(84, 218)
+	Alpha Decay: Po(84, 218) --> Pb(82, 214)
+	Beta Decay: Pb(82, 214) --> Bi(83, 214)
+	Beta Decay: Bi(83, 214) --> Po(84, 214)
+	Alpha Decay: Po(84, 214) --> Pb(82, 210)
+	Beta Decay: Pb(82, 210) --> Bi(83, 210)
+	Beta Decay: Bi(83, 210) --> Po(84, 210)
+	Alpha Decay: Po(84, 210) --> Pb(82, 206)
+
+================= Reaction 8 =================
+Alpha Decay: U(92, 235) --> Th(90, 231)
+	Products not stable. Further reactions initiated.
+Further reaction: Decay of Th-231
+	Beta Decay: Th(90, 231) --> Pa(91, 231)
+	Alpha Decay: Pa(91, 231) --> Ac(89, 227)
+	Alpha Decay: Ac(89, 227) --> Fr(87, 223)
+	Beta Decay: Fr(87, 223) --> Ra(88, 223)
+	Alpha Decay: Ra(88, 223) --> Rn(86, 219)
+	Alpha Decay: Rn(86, 219) --> Po(84, 215)
+	Alpha Decay: Po(84, 215) --> Pb(82, 211)
+	Beta Decay: Pb(82, 211) --> Bi(83, 211)
+	Beta Decay: Bi(83, 211) --> Po(84, 211)
+	Alpha Decay: Po(84, 211) --> Pb(82, 207)
+
+================= Reaction 9 =================
+Alpha Decay: Th(90, 232) --> Ra(88, 228)
+	Products not stable. Further reactions initiated.
+Further reaction: Decay of Ra-228
+	Beta Decay: Ra(88, 228) --> Ac(89, 228)
+	Beta Decay: Ac(89, 228) --> Th(90, 228)
+	Alpha Decay: Th(90, 228) --> Ra(88, 224)
+	Alpha Decay: Ra(88, 224) --> Rn(86, 220)
+	Alpha Decay: Rn(86, 220) --> Po(84, 216)
+	Alpha Decay: Po(84, 216) --> Pb(82, 212)
+	Beta Decay: Pb(82, 212) --> Bi(83, 212)
+	Alpha Decay: Bi(83, 212) --> Tl(81, 208)
+	Beta Decay: Tl(81, 208) --> Pb(82, 208)
+
+================= Reaction 10 =================
+Alpha Decay: Np(93, 237) --> Pa(91, 233)
+	Products not stable. Further reactions initiated.
+Further reaction: Decay of Pa-233
+	Beta Decay: Pa(91, 233) --> U(92, 233)
+	Alpha Decay: U(92, 233) --> Th(90, 229)
+	Alpha Decay: Th(90, 229) --> Ra(88, 225)
+	Beta Decay: Ra(88, 225) --> Ac(89, 225)
+	Alpha Decay: Ac(89, 225) --> Fr(87, 221)
+	Alpha Decay: Fr(87, 221) --> At(85, 217)
+	Alpha Decay: At(85, 217) --> Bi(83, 213)
+	Alpha Decay: Bi(83, 213) --> Tl(81, 209)
+	Beta Decay: Tl(81, 209) --> Pb(82, 209)
+	Beta Decay: Pb(82, 209) --> Bi(83, 209)
