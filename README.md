@@ -21,6 +21,14 @@ To run the test suite, either navigate to the folder where this package is insta
 
 For example, if the python distribution is installed with anaconda, then the package will be installed at `/Users/myid/anaconda/lib/python3.6/site-packages/chemkin8` where `myid` is the user name of the laptop. Then, open terminal, run `cd /Users/myid/anaconda/lib/python3.6/site-packages/chemkin8`, followed by `pytest`. If your default python version is not python3.6, for example, if your default python version is 3.5, then cd into your python3.5 folder instead.
 
+The user can contribute to the development by forking and cloning the directory from `https://github.com/G8-CS207F17/cs207-FinalProject` and adding their changes to the `chemkin8` directory within the cloned project directory. This is where we have handled the parsing of xml files and handling of different reaction types. After making changes, the user can create a pull request on GitHub and the team can review it. To propose new changes, the user can contact the team at the following:
+
+* Mehul Smriti Raje, [mraje@g.harvard.edu]()
+* Ziqi Guo, [zguo@g.harvard.edu]()
+* Ruiqi Chen [ruiqichen@college.harvard.edu]()
+
+The `chemkin` library currently requires an installation of `Python`. It has no other external dependencies.
+
 
 
 
