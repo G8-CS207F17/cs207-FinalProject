@@ -6,7 +6,6 @@ from parser import * # to be deleted
 import datetime
 import matplotlib as mpl
 if os.environ.get('DISPLAY','') == '':
-    print('no display found. Using non-interactive Agg backend')
     mpl.use('Agg')
 import matplotlib.pyplot as plt
 
@@ -334,11 +333,12 @@ class nuclear:
         dir_path = "outputs/"+now.isoformat()+"/"
         file_path = dir_path+"reac_output.txt"
 
+        if not os.path.exists(dir_path):
+            os.makedirs(os.path.dirname(dir_path))
+
         v = None
         if visualise:
             v = visualisations(dir_path)
-            if not os.path.exists(dir_path):
-                os.makedirs(os.path.dirname(dir_path))
 
         reac_str = ''
         # Assessing if decay series required
