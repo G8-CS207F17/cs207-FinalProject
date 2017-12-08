@@ -118,9 +118,64 @@ If tag <reaction reversible="yes"...> : calculations will be for reversible reac
 If tag <reaction reversible="no"...>: calculations will be for non-reversible reactions.
 ```
 
-New features
--------------
+
+
+
+Proposed Features
+---------------
+**Motivation:**
+The aim of including these features is to expand the types of reactions that our `chemkin` library can process and generate information about.
+
+**Suggested Features:**
+1. Support for nuclear reactions
+2. Support for radioactive entities
+3. Generate half-life graphs for species
+
+**Description of Features and Steps to add them:**
+
+1. Nuclear reactions - We want to detect the type of nuclear reaction and generate the decay sequence until a stable product is obtained.:
+    - Maintain database of radioactive elements
+    - Check against database for atomic weight
+        - Database contains atomic weight and atomic number
+        - Also contains nature of nuclei - stable or unstable
+          If product is stable, decay is halted
+          else, continue reducing to stable products (decay series - more in step 3)
+
+    - Detect type of reaction out of
+        - alpha decay
+        - beta decay
+        - positron emission
+        - electron capture
+        - gamma emission
+        - spontaneous fission
+          which produces stable nuclei. Generate complete reactions, graphs, etc.
+
+    - Decay series: produce set of reaction series generated to reach stable radioactive nuclei
+    - Generate reactions and visualisation of decay, half live graphs of radioactive entities in products/series etc
+
+2. Radioactive entities - If simply a radioactive element is provided, we generate the decay sequence as described for nuclear reactions.
+    - If simply a radioactive entity is provided, its decomposition reaction/series can be generated
+    - Reactions and graphs at each step are illustrated.
+
+3. Visualisation - We want to generate graphs showing the decay rate of each reacting specie. This function/class can be called for the existing reaction sets also.
+    - Calculate reaction rates for each entity
+    - Generate decay graphs for products and reactants for reversible and irreversible reactions
+    - Generate half-life graph for radioactive particles
+
+
+
+## New Feature - Nuclear Reactions
+
+**Motivation**
+
+Our new feature expands the functionality of the `chemkin` library, depicting how it handles additional types of reactions. Based on the list of reactions provided, the `nuclear` class detects the type of reaction  and prints the complete reaction. It handles both one-step and multi-step reactions and generates the decay series until a stable product is formed. The `visualisations` class generates decay graphs for all nuclear reactions. This class can be extended to other types of reactions as well.
+
+
+
+**Implementation**
+
 Let us have a set of nuclear reactions:
+
 ```
 Ra-226 => Rn-222
 C-14 => N-14
@@ -128,6 +183,7 @@ U-238 => Th-234
 ```
 
 We can add information about these reactions in an xml file of the form:
+
 ```
 <?xml version="1.0"?>
 
@@ -181,16 +237,19 @@ We can add information about these reactions in an xml file of the form:
 ```
 
 We can initialise the `nuclear` class and parse the XML file by passing in the path to the XML file:
+
 ```
 n = nuclear('path-to-xml')
 ```
 
 We can print the complete reactions and generate plots for radioactive decays by calling the `print_reaction` function.
+
 ```
 n.print_reaction(verbose=True, visualise=True)
 ```
 
 The result is stored in `outputs/cur-date-and-time/reac_output.txt` and is displayed on the console as:
+
 ```
 ================= Reaction 1 =================
 Alpha Decay: Ra(88, 226) --> Rn(86, 222)
@@ -231,43 +290,4 @@ Further reaction: Decay of Th-234
 The plots for decay of each reactant in the list of reactions is also stored in the same directory, marked by the isotope name.
 
 
-Future Features
----------------
-**Motivation:**
-The aim of including these features is to expand the types of reactions that our `chemkin` library can process and generate information about.
 
-**Suggested Features:**
-1. Support for nuclear reactions
-2. Support for radioactive entities
-3. Generate half-life graphs for species
-
-**Description of Features and Steps to add them:**
-
-1. Nuclear reactions - We want to detect the type of nuclear reaction and generate the decay sequence until a stable product is obtained.:
-    - Maintain database of radioactive elements
-    - Check against database for atomic weight
-        - Database contains atomic weight and atomic number
-        - Also contains nature of nuclei - stable or unstable
-          If product is stable, decay is halted
-          else, continue reducing to stable products (decay series - more in step 3)
-
-    - Detect type of reaction out of
-        - alpha decay
-        - beta decay
-        - positron emission
-        - electron capture
-        - gamma emission
-        - spontaneous fission
-          which produces stable nuclei. Generate complete reactions, graphs, etc.
-
-    - Decay series: produce set of reaction series generated to reach stable radioactive nuclei
-    - Generate reactions and visualisation of decay, half live graphs of radioactive entities in products/series etc
-
-2. Radioactive entities - If simply a radioactive element is provided, we generate the decay sequence as described for nuclear reactions.
-    - If simply a radioactive entity is provided, its decomposition reaction/series can be generated
-    - Reactions and graphs at each step are illustrated.
-
-3. Visualisation - We want to generate graphs showing the decay rate of each reacting specie. This function/class can be called for the existing reaction sets also.
-    - Calculate reaction rates for each entity
-    - Generate decay graphs for products and reactants for reversible and irreversible reactions
-    - Generate half-life graph for radioactive particles
