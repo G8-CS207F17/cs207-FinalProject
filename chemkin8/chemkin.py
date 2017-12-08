@@ -181,7 +181,7 @@ class visualisations:
 
         EXAMPLES
         ========
-        >>> output_dir = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'tests/')
+        >>> output_dir = os.path.join(os.path.dirname(os.path.realpath(__file__)), '../outputs/tests/')
         >>> v = visualisations(output_dir)
         >>> v.draw_decay_graph(2.99592e-9, 'C-14')
         """
@@ -220,7 +220,7 @@ class visualisations:
 
         EXAMPLES
         ========
-        >>> output_dir = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'tests/')
+        >>> output_dir = os.path.join(os.path.dirname(os.path.realpath(__file__)), '../outputs/tests/')
         >>> v = visualisations(output_dir)
         >>> steps = [['Rn', 'Po', 'Pb', 'Bi', 'Po', 'Pb', 'Bi', 'Po', 'Pb'], [86, 84, 82, 83, 84, 82, 83, 84, 82], [222, 218, 214, 214, 214, 210, 210, 210, 206]]
         >>> v.draw_decay_series(steps, 'Rn-222')
