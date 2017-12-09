@@ -1,7 +1,7 @@
 from setuptools import setup
 
 setup(name='chemkin8',
-      version='1.2',
+      version='1.3',
       description='A Chemical Kinetics Library',
       url='https://github.com/G8-CS207F17/cs207-FinalProject',
       author='Mehul Smriti Raje, Ruiqi Chen, Ziqi Guo,',
